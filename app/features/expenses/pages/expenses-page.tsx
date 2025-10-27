@@ -2,6 +2,7 @@ import type { Route } from './+types/expenses-page';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
 import { DateCard } from '../components/date-card';
+import { MonthlyOverview } from '../components/monthly-overview';
 
 const paramSchema = z.object({
   year: z.coerce.number(),
@@ -29,6 +30,7 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className='flex flex-col items-center justify-center'>
       <DateCard year={year} month={month} />
+      <MonthlyOverview year={year} month={month} />
     </div>
   );
 }
