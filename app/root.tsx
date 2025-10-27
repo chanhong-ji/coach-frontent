@@ -36,9 +36,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const isLoggedIn = false;
   return (
     <div>
-      <Navigation />
+      <Navigation isLoggedIn={isLoggedIn} />
       <Outlet />
     </div>
   );
