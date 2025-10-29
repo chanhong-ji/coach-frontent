@@ -1,5 +1,5 @@
 import { Form } from "react-router";
-import { Dialog, DialogFooter, DialogTrigger } from "~/common/components/ui/dialog";
+import { DialogFooter } from "~/common/components/ui/dialog";
 import { Button } from "~/common/components/ui/button";
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from "~/common/components/ui/dialog";
 import { InputPair } from "./input-pair";

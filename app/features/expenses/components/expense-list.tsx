@@ -24,35 +24,44 @@ import { Form } from "react-router";
 
 export function ExpenseList() {
   return (
-    <div className="w-3xl space-y-4 border-2 border-accent-foreground/2">
+    <div className="w-2xl space-y-4 border-2 border-accent-foreground/2 mt-3">
       {Array.from({ length: 10 }).map((_, index) => (
         <Item key={index} variant="outline">
           <ItemContent>
             <ItemDescription>Tuesday, 27th October 2025</ItemDescription>
-            <ItemTitle>Movie Tickets with friends</ItemTitle>
+            <ItemTitle className="">Movie Tickets with friends</ItemTitle>
+            {/* <ItemDescription>memo</ItemDescription> */}
+            <ItemDescription className="text-xs">
+              memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo memo memo memo memo memo memo
+              memo memo memo memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo memo memo memo
+              memo memo memo memo memo memo memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo
+              memo memo memo memo memo memo memo memo memo
+            </ItemDescription>
             <div className="flex w-full flex-wrap gap-2">
               <Badge variant="secondary">Food</Badge>
             </div>
           </ItemContent>
           <ItemContent>
-            <ItemTitle>100000 KRW</ItemTitle>
+            <ItemTitle>100000 원</ItemTitle>
           </ItemContent>
           <ItemActions>
             <AlertDialog>
               <Dialog>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className="h-8 w-8 p-0 hover:cursor-pointer">
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DialogTrigger asChild>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem className="hover:cursor-pointer">Edit</DropdownMenuItem>
                     </DialogTrigger>
                     <AlertDialogTrigger asChild>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Delete</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="hover:cursor-pointer">
+                        Delete
+                      </DropdownMenuItem>
                     </AlertDialogTrigger>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -66,11 +75,11 @@ export function ExpenseList() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>취소</AlertDialogCancel>
-                  <Form method="post" className="inline-flex">
+                  <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
+                  <Form method="post" className="inline-flex hover:cursor-pointer">
                     <input type="hidden" name="intent" value="delete-expense" />
                     <input type="hidden" name="expenseId" value={String(index)} />
-                    <Button type="submit" variant="destructive">
+                    <Button type="submit" variant="destructive" className="hover:cursor-pointer">
                       삭제
                     </Button>
                   </Form>

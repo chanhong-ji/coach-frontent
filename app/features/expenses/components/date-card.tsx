@@ -1,9 +1,9 @@
-import { Card } from '~/common/components/ui/card';
-import { Button } from '~/common/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router';
-import { cn } from '~/lib/utils';
-import { DateTime } from 'luxon';
+import { Card } from "~/common/components/ui/card";
+import { Button } from "~/common/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router";
+import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 
 export function DateCard({ year, month }: { year: number; month: number }) {
   const thisYear = DateTime.now().year;
@@ -11,18 +11,23 @@ export function DateCard({ year, month }: { year: number; month: number }) {
   const isThisMonth = year === thisYear && month === thisMonth;
 
   return (
-    <Card className='flex items-center justify-between p-4 w-96 flex-row'>
-      <Button variant='ghost' size='icon' className='cursor-pointer'>
+    <Card className="flex items-center justify-between p-4 w-60 h-15 flex-row rounded-sm border-0 bg-primary-foreground shadow-none">
+      <Button variant="ghost" size="icon" className="cursor-pointer hover:bg-primary/20">
         <Link to={`/expenses/${year}/${month - 1}`}>
-          <ChevronLeft className='w-4 h-4' />
+          <ChevronLeft className="w-4 h-4" />
         </Link>
       </Button>
-      <p className='text-lg font-semibold'>
+      <p className="text-sm font-semibold">
         {year}년 {month}월
       </p>
-      <Button variant='ghost' size='icon' className={cn('cursor-pointer', isThisMonth && 'invisible')} disabled={isThisMonth}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn("cursor-pointer hover:bg-primary/20", isThisMonth && "invisible")}
+        disabled={isThisMonth}
+      >
         <Link to={`/expenses/${year}/${month + 1}`}>
-          <ChevronRight className='w-4 h-4' />
+          <ChevronRight className="w-4 h-4" />
         </Link>
       </Button>
     </Card>
