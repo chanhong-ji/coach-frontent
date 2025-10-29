@@ -33,13 +33,13 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
   const { year, month } = loaderData;
 
   return (
-    <div className="flex flex-col items-center justify-center bg-background">
+    <div className="flex flex-col items-center justify-center bg-background p-5">
       <DateCard year={year} month={month} />
       <MonthlyOverview year={year} month={month} />
       <div className="flex flex-col mt-10">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="destructive" className="self-end bg-primary/50 hover:cursor-pointer">
+            <Button variant="link" className="self-end hover:cursor-pointer">
               Add Expense
             </Button>
           </DialogTrigger>

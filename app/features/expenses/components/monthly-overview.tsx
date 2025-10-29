@@ -2,7 +2,7 @@ import { Separator } from "~/common/components/ui/separator";
 
 export function MonthlyOverview({ year, month }: { year: number; month: number }) {
   return (
-    <div className="mt-10 rounded-lg p-4 w-2xl h-40 flex flex-col justify-center border-none bg-accent">
+    <div className="mt-5 rounded-lg p-4 w-2xl h-40 flex flex-col justify-center border-none bg-accent">
       <div className="space-y-1 flex flex-col justify-center pl-4">
         <h2 className="text-xl leading-none font-medium">Monthly Overview</h2>
         <p className="text-muted-foreground text-xs">
