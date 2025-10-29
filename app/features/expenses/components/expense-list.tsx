@@ -11,7 +11,7 @@ import { MoreHorizontal } from "lucide-react";
 
 export function ExpenseList() {
   return (
-    <div className="w-3xl mt-10 space-y-4 border-2 border-accent-foreground/2">
+    <div className="w-3xl space-y-4 border-2 border-accent-foreground/2">
       {Array.from({ length: 10 }).map((_, index) => (
         <Item variant="outline">
           <ItemContent>

@@ -5,6 +5,9 @@ import { DateCard } from "../components/date-card";
 import { MonthlyOverview } from "../components/monthly-overview";
 import { PaginationBar } from "~/common/components/pagination-bar";
 import { ExpenseList } from "../components/expense-list";
+import { Button } from "~/common/components/ui/button";
+import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
+import { AddExpenseDialog } from "../components/add-expense-dialog";
 
 const paramSchema = z.object({
   year: z.coerce.number(),
@@ -30,11 +33,21 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
   const { year, month } = loaderData;
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <DateCard year={year} month={month} />
-      <MonthlyOverview year={year} month={month} />
-      <ExpenseList />
-      <PaginationBar totalPages={10} />
-    </div>
+    <Dialog>
+      <div className="flex flex-col items-center justify-center">
+        <DateCard year={year} month={month} />
+        <MonthlyOverview year={year} month={month} />
+        <div className="flex flex-col mt-10">
+          <DialogTrigger asChild>
+            <Button variant="outline" className="self-end hover:border-primary">
+              Add Expense
+            </Button>
+          </DialogTrigger>
+          <ExpenseList />
+        </div>
+        <AddExpenseDialog />
+        <PaginationBar totalPages={10} />
+      </div>
+    </Dialog>
   );
 }
