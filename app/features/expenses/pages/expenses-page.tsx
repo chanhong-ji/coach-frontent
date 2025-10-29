@@ -33,21 +33,21 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
   const { year, month } = loaderData;
 
   return (
-    <Dialog>
-      <div className="flex flex-col items-center justify-center">
-        <DateCard year={year} month={month} />
-        <MonthlyOverview year={year} month={month} />
-        <div className="flex flex-col mt-10">
+    <div className="flex flex-col items-center justify-center">
+      <DateCard year={year} month={month} />
+      <MonthlyOverview year={year} month={month} />
+      <div className="flex flex-col mt-10">
+        <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="self-end hover:border-primary">
               Add Expense
             </Button>
           </DialogTrigger>
-          <ExpenseList />
-        </div>
-        <AddExpenseDialog />
-        <PaginationBar totalPages={10} />
+          <AddExpenseDialog />
+        </Dialog>
+        <ExpenseList />
       </div>
-    </Dialog>
+      <PaginationBar totalPages={10} />
+    </div>
   );
 }
