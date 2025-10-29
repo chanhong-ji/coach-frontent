@@ -3,9 +3,13 @@ import { Button } from "~/common/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/common/components/ui/field";
 import { Input } from "~/common/components/ui/input";
-import { Link } from "react-router";
+import { Form, Link } from "react-router";
 
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+interface LoginFormProps extends React.ComponentProps<"div"> {
+  error?: string;
+}
+
+export function LoginForm({ error, className, ...props }: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -14,20 +18,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           <CardDescription>Enter your email below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <Form method="post">
             <FieldGroup>
+              {error && <div className="text-sm text-red-500 bg-red-50 p-3 rounded-md">{error}</div>}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Input id="email" name="email" type="email" placeholder="m@example.com" required />
               </Field>
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input id="password" name="password" type="password" required />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -39,7 +39,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 </FieldDescription>
               </Field>
             </FieldGroup>
-          </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
