@@ -6,7 +6,9 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "generate": "graphql-codegen",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -23,6 +25,9 @@
     "@react-router/serve": "^7.9.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "graphql": "^16.11.0",
+    "graphql-request": "^7.3.1",
     "isbot": "^5.1.31",
     "lucide-react": "^0.548.0",
     "luxon": "^3.7.2",
@@ -35,6 +40,13 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^6.0.1",
+    "@graphql-codegen/client-preset": "5.1.1",
+    "@graphql-codegen/typescript": "^5.0.2",
+    "@graphql-codegen/typescript-graphql-request": "^6.3.0",
+    "@graphql-codegen/typescript-operations": "^5.0.2",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@parcel/watcher": "^2.5.1",
     "@react-router/dev": "^7.9.2",
     "@tailwindcss/vite": "^4.1.13",
     "@types/luxon": "^3.7.1",

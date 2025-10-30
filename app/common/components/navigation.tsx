@@ -8,6 +8,7 @@ import { Link, NavLink } from "react-router";
 import { Separator } from "./ui/separator";
 import { cn } from "~/lib/utils";
 import { Button } from "./ui/button";
+import type { MeDto } from "~/graphql/__generated__/graphql";
 
 const menus = [
   {
@@ -20,7 +21,7 @@ const menus = [
   },
 ];
 
-export function Navigation({ isLoggedIn }: { isLoggedIn: boolean }) {
+export function Navigation({ isLoggedIn, user }: { isLoggedIn: boolean; user: MeDto | null }) {
   return (
     <nav className="flex px-20 h-16 items-center backdrop-blur fixed top-0 left-0 right-0 z-50 shadow-sm">
       <div className="flex w-full items-center">

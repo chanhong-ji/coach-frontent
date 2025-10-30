@@ -3,6 +3,9 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration }
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Navigation } from "./common/components/navigation";
+import { createClient } from "./client";
+import type { MeQuery, MeQueryVariables } from "./graphql/__generated__/graphql";
+import { ME_QUERY } from "./graphql/queries";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,11 +38,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  const isLoggedIn = false;
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = createClient(request);
+  const {
+    me: { user },
+  } = await client.request<MeQuery, MeQueryVariables>(ME_QUERY);
+  return { user: user ?? null };
+};
+
+export default function App({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData;
+  const isLoggedIn = !!user;
   return (
     <div>
-      <Navigation isLoggedIn={isLoggedIn} />
+      <Navigation isLoggedIn={isLoggedIn} user={user} />
       <Outlet />
     </div>
   );
