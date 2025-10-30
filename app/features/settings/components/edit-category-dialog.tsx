@@ -10,7 +10,7 @@ export function EditCategoryDialog() {
         <DialogTitle>카테고리 수정</DialogTitle>
       </DialogHeader>
       <Form method="post" className="space-y-4">
-        <InputPair name="name" label="name" required placeholder="New category name" />
+        <InputPair name="name" label="타이틀" required placeholder="New category name" />
         <DialogFooter>
           <Button type="submit">Edit Category</Button>
         </DialogFooter>
