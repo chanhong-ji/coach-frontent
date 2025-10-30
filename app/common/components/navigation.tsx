@@ -19,6 +19,10 @@ const menus = [
     name: "Expenses",
     to: "/expenses",
   },
+  {
+    name: "Settings",
+    to: "/settings",
+  },
 ];
 
 export function Navigation({ isLoggedIn, user }: { isLoggedIn: boolean; user: MeDto | null }) {

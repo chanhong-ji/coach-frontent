@@ -1,5 +1,4 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Navigation } from "./common/components/navigation";
@@ -52,7 +51,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <Navigation isLoggedIn={isLoggedIn} user={user} />
-      <Outlet />
+      <Outlet context={{ user, isLoggedIn }} />
     </div>
   );
 }

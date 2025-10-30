@@ -9,4 +9,5 @@ export default [
   route("/login", "features/auth/pages/login-page.tsx"),
   route("/join", "features/auth/pages/join-page.tsx"),
   route("/logout", "features/auth/pages/logout-page.tsx"),
+  route("/settings", "features/settings/pages/settings-page.tsx"),
 ] satisfies RouteConfig;
