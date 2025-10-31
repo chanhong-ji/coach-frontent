@@ -8,8 +8,11 @@ export default [
     route("/api/add-expense", "features/expenses/api/add-expense-api.tsx"),
     route("/api/delete-expense", "features/expenses/api/delete-expense-api.tsx"),
   ]),
+  ...prefix("/settings", [
+    index("features/settings/pages/settings-page.tsx"),
+    route("/api/add-category", "features/settings/api/add-category-api.tsx"),
+  ]),
   route("/login", "features/auth/pages/login-page.tsx"),
   route("/join", "features/auth/pages/join-page.tsx"),
   route("/logout", "features/auth/pages/logout-page.tsx"),
-  route("/settings", "features/settings/pages/settings-page.tsx"),
 ] satisfies RouteConfig;

@@ -15,6 +15,7 @@ import {
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
 import AddCategoryDialog from "./add-category-dialog";
+import { useState } from "react";
 
 type CategoryRow = {
   id: number;
@@ -43,17 +44,19 @@ function pluralize(n: number, unit: string) {
 }
 
 export default function CategoryCard({ title = "Categories", items = fallbackItems, className }: Props) {
+  const [addCategoryOpen, setAddCategoryOpen] = useState(false);
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{title}</CardTitle>
-        <Dialog>
+        <Dialog open={addCategoryOpen} onOpenChange={setAddCategoryOpen}>
           <DialogTrigger asChild>
             <Button size="sm" variant="link" className="hover:cursor-pointer">
               Add Category
             </Button>
           </DialogTrigger>
-          <AddCategoryDialog />
+          <AddCategoryDialog setOpen={setAddCategoryOpen} />
         </Dialog>
       </CardHeader>
 
