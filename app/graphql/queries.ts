@@ -269,3 +269,22 @@ export const DELETE_BUDGET_MUTATION = gql`
     }
   }
 `;
+
+export const FIND_BUDGETS_QUERY = gql`
+  query FindBudgets($findBudgetInput: FindBudgetInput!) {
+    findBudgets(FindBudgetInput: $findBudgetInput) {
+      ok
+      error
+      budgets {
+        id
+        yearMonth
+        totalAmount
+        category {
+          id
+          name
+          sortOrder
+        }
+      }
+    }
+  }
+`;

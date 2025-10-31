@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Button } from "~/common/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/common/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
 import AddBudgetDialog from "./add-budget-dialog";
-import EditBudgetDialog from "./edit-budget-dialog";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -15,28 +14,18 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
-
-type BudgetRow = {
-  id: number;
-  category: string;
-  allocated: number; // 예산
-  spent: number; // 사용액
-};
+import type { BudgetDto, CategoryDto } from "~/graphql/__generated__/graphql";
+import { useEffect, useState } from "react";
+import { useFetcher } from "react-router";
 
 type Props = {
   title?: string;
-  items?: BudgetRow[];
+  budgets?: BudgetDto[];
   className?: string;
+  categories?: CategoryDto[];
+  year: number;
+  month: number;
 };
-
-// 더미 데이터
-const fallbackItems: BudgetRow[] = [
-  { id: 1, category: "Groceries", allocated: 500, spent: 350 },
-  { id: 2, category: "Entertainment", allocated: 200, spent: 180 },
-  { id: 3, category: "Utilities", allocated: 150, spent: 100 },
-  { id: 4, category: "Savings", allocated: 1000, spent: 400 },
-  { id: 5, category: "Health", allocated: 300, spent: 200 },
-];
 
 function currency(n: number) {
   return n.toLocaleString(undefined, { style: "currency", currency: "KRW" });
@@ -55,18 +44,55 @@ function ProgressBar({ pct }: { pct: number }) {
   );
 }
 
-export default function BudgetTableCard({ title = "Budgets", items = fallbackItems, className }: Props) {
+export default function BudgetTableCard({ title = "Budgets", budgets, categories, year, month, className }: Props) {
+  const fetcher = useFetcher();
+  const [addBudgetOpen, setAddBudgetOpen] = useState(false);
+  const [deleteBudgetOpen, setDeleteBudgetOpen] = useState(false);
+  const [deleteBudget, setDeleteBudget] = useState<BudgetDto | null>(null);
+
+  const handleAddBudgetClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setAddBudgetOpen(true);
+  };
+
+  const handleDeleteBudgetClick = (e: React.MouseEvent<HTMLButtonElement>, budget: BudgetDto) => {
+    e.preventDefault();
+    setDeleteBudget(budget);
+    setDeleteBudgetOpen(true);
+  };
+
+  const handleDeleteBudget = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!deleteBudget) return;
+    fetcher.submit(
+      {
+        intent: "delete-budget",
+        budgetId: String(deleteBudget.id),
+      },
+      {
+        method: "post",
+        action: "/settings/api/delete-budget",
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (fetcher.data?.ok) {
+      setDeleteBudgetOpen(false);
+    }
+  }, [fetcher.data]);
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{title}</CardTitle>
-        <Dialog>
-          <DialogTrigger asChild>
+        <Dialog open={addBudgetOpen} onOpenChange={setAddBudgetOpen}>
+          <DialogTrigger asChild onClick={handleAddBudgetClick}>
             <Button size="sm" variant="link" className="hover:cursor-pointer">
-              Add Budget
+              Add & Edit Budget
             </Button>
           </DialogTrigger>
-          <AddBudgetDialog />
+          <AddBudgetDialog categories={categories ?? []} year={year} month={month} />
         </Dialog>
       </CardHeader>
 
@@ -83,50 +109,53 @@ export default function BudgetTableCard({ title = "Budgets", items = fallbackIte
           </TableHeader>
 
           <TableBody>
-            {items.map((row) => {
-              const pct = row.allocated > 0 ? Math.round((row.spent / row.allocated) * 100) : 0;
-              return (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium">{row.category}</TableCell>
-                  <TableCell className="tabular-nums">{currency(row.allocated)}</TableCell>
-                  <TableCell className="tabular-nums">{currency(row.spent)}</TableCell>
-                  <TableCell className="pr-8">
-                    <ProgressBar pct={pct} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="inline-flex items-center gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="icon" className="h-8 w-8" aria-label={`Edit ${row.category}`}>
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <EditBudgetDialog />
-                      </Dialog>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Delete ${row.category}`}>
+            <AlertDialog open={deleteBudgetOpen} onOpenChange={setDeleteBudgetOpen}>
+              {budgets?.map((budget) => {
+                const pct = budget.totalAmount > 0 ? Math.round((budget.totalAmount / budget.totalAmount) * 100) : 0;
+                return (
+                  <TableRow key={budget.id}>
+                    <TableCell className="font-medium">{budget.category?.name ?? "Total"}</TableCell>
+                    <TableCell className="tabular-nums">{currency(budget.totalAmount)}</TableCell>
+                    {/* spent amount */}
+                    <TableCell className="tabular-nums">{currency(0)}</TableCell>
+                    <TableCell className="pr-8">
+                      <ProgressBar pct={pct} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <AlertDialogTrigger asChild onClick={(e) => handleDeleteBudgetClick(e, budget)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label={`Delete ${budget.category?.name}`}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{`${row.category} 예산 삭제`}</AlertDialogTitle>
-                            <AlertDialogDescription>해당 카테고리의 예산을 삭제할까요?</AlertDialogDescription>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
-                              <Button type="submit" variant="destructive" className="hover:cursor-pointer">
-                                삭제
-                              </Button>
-                            </AlertDialogFooter>
-                          </AlertDialogHeader>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{`${deleteBudget?.category?.name ?? "Total"} 예산 삭제`}</AlertDialogTitle>
+                  <AlertDialogDescription>해당 카테고리의 예산을 삭제할까요?</AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
+                    <Button
+                      type="submit"
+                      variant="destructive"
+                      className="hover:cursor-pointer"
+                      onClick={handleDeleteBudget}
+                    >
+                      삭제
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
           </TableBody>
         </Table>
       </CardContent>

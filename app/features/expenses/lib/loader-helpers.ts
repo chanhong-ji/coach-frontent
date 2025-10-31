@@ -5,11 +5,17 @@ import type {
   CreateExpenseInput,
   CreateExpenseMutation,
   CreateExpenseMutationVariables,
+  DeleteBudgetInput,
+  DeleteBudgetMutation,
+  DeleteBudgetMutationVariables,
   DeleteExpenseInput,
   DeleteExpenseMutation,
   DeleteExpenseMutationVariables,
   FindAccountsQuery,
   FindAccountsQueryVariables,
+  FindBudgetInput,
+  FindBudgetsQuery,
+  FindBudgetsQueryVariables,
   FindCategoriesQuery,
   FindCategoriesQueryVariables,
   FindExpensesQuery,
@@ -19,15 +25,21 @@ import type {
   UpdateExpenseInput,
   UpdateExpenseMutation,
   UpdateExpenseMutationVariables,
+  UpsertBudgetInput,
+  UpsertBudgetMutation,
+  UpsertBudgetMutationVariables,
 } from "~/graphql/__generated__/graphql";
 import {
   CREATE_EXPENSE_MUTATION,
+  DELETE_BUDGET_MUTATION,
   DELETE_EXPENSE_MUTATION,
   FIND_ACCOUNTS_QUERY,
+  FIND_BUDGETS_QUERY,
   FIND_CATEGORIES_QUERY,
   FIND_EXPENSES_QUERY,
   FIND_MONTHLY_EXPENSE_TOTAL_QUERY,
   UPDATE_EXPENSE_MUTATION,
+  UPSERT_BUDGET_MUTATION,
 } from "~/graphql/queries";
 
 const paramSchema = z.object({
@@ -106,5 +118,23 @@ export async function updateExpense(client: GraphQLClient, input: UpdateExpenseI
 export async function deleteExpense(client: GraphQLClient, input: DeleteExpenseInput) {
   return client.request<DeleteExpenseMutation, DeleteExpenseMutationVariables>(DELETE_EXPENSE_MUTATION, {
     deleteExpenseInput: input,
+  });
+}
+
+export async function findBudgets(client: GraphQLClient, input: FindBudgetInput) {
+  return client.request<FindBudgetsQuery, FindBudgetsQueryVariables>(FIND_BUDGETS_QUERY, {
+    findBudgetInput: input,
+  });
+}
+
+export async function upsertBudget(client: GraphQLClient, input: UpsertBudgetInput) {
+  return client.request<UpsertBudgetMutation, UpsertBudgetMutationVariables>(UPSERT_BUDGET_MUTATION, {
+    upsertBudgetInput: input,
+  });
+}
+
+export async function deleteBudget(client: GraphQLClient, input: DeleteBudgetInput) {
+  return client.request<DeleteBudgetMutation, DeleteBudgetMutationVariables>(DELETE_BUDGET_MUTATION, {
+    deleteBudgetInput: input,
   });
 }

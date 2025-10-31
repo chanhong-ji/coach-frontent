@@ -1,35 +1,50 @@
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "~/common/components/ui/dialog";
-import { Form } from "react-router";
+import { Form, useFetcher } from "react-router";
 import { InputPair } from "~/features/expenses/components/input-pair";
 import { Button } from "~/common/components/ui/button";
 import { SelectPair } from "~/features/expenses/components/select-pair";
+import type { CategoryDto } from "~/graphql/__generated__/graphql";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
-export default function AddBudgetDialog() {
-  const categories = [
-    { value: "Food", label: "Food" },
-    { value: "Transportation", label: "Transportation" },
-    { value: "Entertainment", label: "Entertainment" },
-    { value: "Other", label: "Other" },
-  ];
+export default function AddBudgetDialog({
+  categories,
+  year,
+  month,
+}: {
+  categories: CategoryDto[];
+  year: number;
+  month: number;
+}) {
+  const fetcher = useFetcher();
+
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle>예산 추가</DialogTitle>
       </DialogHeader>
-      <Form method="post" className="space-y-4">
-        <SelectPair name="category" label="Category" placeholder="Select a category" options={categories} required />
+      <DialogDescription></DialogDescription>
+      <fetcher.Form method="post" action="/settings/api/add-budget" className="space-y-4">
+        <input type="hidden" name="year" value={year} />
+        <input type="hidden" name="month" value={month} />
+        <SelectPair
+          name="categoryId"
+          label="카테고리"
+          placeholder="카테고리를 선택해주세요."
+          options={categories.map((category) => ({ value: category.id.toString(), label: category.name }))}
+          required
+        />
         <InputPair
           name="allocated"
-          label="Allocated"
+          label="예산 금액"
           type="number"
           min={0}
           required
-          placeholder="New allocated amount"
+          placeholder="예산 금액을 입력해주세요."
         />
         <DialogFooter>
           <Button type="submit">추가</Button>
         </DialogFooter>
-      </Form>
+      </fetcher.Form>
     </DialogContent>
   );
 }

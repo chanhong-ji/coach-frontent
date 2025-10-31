@@ -58,6 +58,11 @@ export default function CategoryCard({ title = "Categories", categories, classNa
     );
   };
 
+  const handleAddCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setAddCategoryOpen(true);
+  };
+
   useEffect(() => {
     if (fetcher.data?.ok) {
       setDeleteCategoryOpen(false);
@@ -69,7 +74,7 @@ export default function CategoryCard({ title = "Categories", categories, classNa
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{title}</CardTitle>
         <Dialog open={addCategoryOpen} onOpenChange={setAddCategoryOpen}>
-          <DialogTrigger asChild>
+          <DialogTrigger asChild onClick={handleAddCategoryClick}>
             <Button size="sm" variant="link" className="hover:cursor-pointer">
               Add Category
             </Button>

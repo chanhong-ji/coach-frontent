@@ -33,6 +33,7 @@ type Documents = {
     "\n  query FindExpenses($findExpenseMonthlyInput: FindExpenseMonthlyInput!) {\n    findExpenseMonthly(FindExpenseMonthlyInput: $findExpenseMonthlyInput) {\n      expenses {\n        id\n        name\n        amount\n        postedAt\n        accountId\n        categoryId\n        merchantId\n        merchantText\n        memo\n      }\n      totalCount\n      ok\n      error\n    }\n  }\n": typeof types.FindExpensesDocument,
     "\n  mutation UpsertBudget($upsertBudgetInput: UpsertBudgetInput!) {\n    upsertBudget(UpsertBudgetInput: $upsertBudgetInput) {\n      ok\n      error\n      budget {\n        id\n        yearMonth\n        totalAmount\n      }\n    }\n  }\n": typeof types.UpsertBudgetDocument,
     "\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n": typeof types.DeleteBudgetDocument,
+    "\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n        }\n      }\n    }\n  }\n": typeof types.FindBudgetsDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($LoginInput: LoginInput!) {\n    login(LoginInput: $LoginInput) {\n      ok\n      error\n      token\n      userId\n    }\n  }\n": types.LoginDocument,
@@ -54,6 +55,7 @@ const documents: Documents = {
     "\n  query FindExpenses($findExpenseMonthlyInput: FindExpenseMonthlyInput!) {\n    findExpenseMonthly(FindExpenseMonthlyInput: $findExpenseMonthlyInput) {\n      expenses {\n        id\n        name\n        amount\n        postedAt\n        accountId\n        categoryId\n        merchantId\n        merchantText\n        memo\n      }\n      totalCount\n      ok\n      error\n    }\n  }\n": types.FindExpensesDocument,
     "\n  mutation UpsertBudget($upsertBudgetInput: UpsertBudgetInput!) {\n    upsertBudget(UpsertBudgetInput: $upsertBudgetInput) {\n      ok\n      error\n      budget {\n        id\n        yearMonth\n        totalAmount\n      }\n    }\n  }\n": types.UpsertBudgetDocument,
     "\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n": types.DeleteBudgetDocument,
+    "\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n        }\n      }\n    }\n  }\n": types.FindBudgetsDocument,
 };
 
 /**
@@ -146,6 +148,10 @@ export function graphql(source: "\n  mutation UpsertBudget($upsertBudgetInput: U
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
