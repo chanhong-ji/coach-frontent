@@ -21,10 +21,18 @@ import {
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
 import { Form } from "react-router";
-import type { CategoryDto, ExpenseDto } from "~/graphql/__generated__/graphql";
+import type { AccountDto, CategoryDto, ExpenseDto } from "~/graphql/__generated__/graphql";
 import { DateTime } from "luxon";
 
-export function ExpenseList({ expenses, categories }: { expenses: ExpenseDto[]; categories: CategoryDto[] }) {
+export function ExpenseList({
+  expenses,
+  categories,
+  accounts,
+}: {
+  expenses: ExpenseDto[];
+  categories: CategoryDto[];
+  accounts: AccountDto[];
+}) {
   return (
     <div className="w-2xl space-y-4 border-2 border-accent-foreground/2 mt-3">
       {expenses.map((expense, index) => (
@@ -36,6 +44,9 @@ export function ExpenseList({ expenses, categories }: { expenses: ExpenseDto[]; 
             <div className="flex w-full flex-wrap gap-2">
               <Badge variant="secondary">
                 {categories.find((category) => category.id === expense.categoryId)?.name ?? "Unknown"}
+              </Badge>
+              <Badge variant="secondary">
+                {accounts.find((account) => account.id === expense.accountId)?.name ?? "Unknown"}
               </Badge>
             </div>
           </ItemContent>
@@ -63,7 +74,7 @@ export function ExpenseList({ expenses, categories }: { expenses: ExpenseDto[]; 
                     </AlertDialogTrigger>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <EditExpenseDialog />
+                <EditExpenseDialog categories={categories} accounts={accounts} expense={expense} />
               </Dialog>
               <AlertDialogContent>
                 <AlertDialogHeader>

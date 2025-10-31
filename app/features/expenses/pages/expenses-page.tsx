@@ -13,10 +13,14 @@ import {
   fetchMonthlyExpenses,
   fetchMonthlyTotal,
   fetchCategories,
+  fetchAccounts,
+  parseSearchParamsOrThrow,
 } from "../lib/loader-helpers";
+import { useState } from "react";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { year, month } = parseParamsOrThrow(params);
+  const { page } = parseSearchParamsOrThrow(request.url);
 
   if (isFutureMonth(year, month)) {
     throw new Error("Future month");
@@ -24,10 +28,11 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   const { client } = createClient(request);
 
-  const [monthlyTotalResult, expensesResult, categoriesResult] = await Promise.all([
+  const [monthlyTotalResult, expensesResult, categoriesResult, accountsResult] = await Promise.all([
     fetchMonthlyTotal(client, year, month),
-    fetchMonthlyExpenses(client, year, month),
+    fetchMonthlyExpenses(client, year, month, page),
     fetchCategories(client),
+    fetchAccounts(client),
   ]);
 
   const {
@@ -40,6 +45,10 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     findCategories: { categories },
   } = categoriesResult;
 
+  const {
+    findAccounts: { accounts },
+  } = accountsResult;
+
   if (!monthlyOk) {
     throw new Error(monthlyError ?? "Failed to find monthly expense total");
   }
@@ -49,28 +58,31 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   const { totalExpense, totalCount } = months?.[0] ?? { totalExpense: 0, totalCount: 0 };
 
-  return { year, month, totalExpense, totalCount, expenses, categories };
+  return { year, month, totalExpense, totalCount, expenses, categories, accounts };
 };
 
-export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
-  const { year, month, totalExpense, totalCount, expenses, categories } = loaderData;
+// export const action = async ({ request, params }: Route.ActionArgs) => {};
 
+export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
+  const { year, month, totalExpense, totalCount, expenses, categories, accounts } = loaderData;
+  const totalPages = Math.ceil(totalCount / 10);
+  const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col items-center justify-center bg-background p-5">
       <DateCard year={year} month={month} />
       <MonthlyOverview year={year} month={month} totalExpense={totalExpense} totalCount={totalCount} />
       <div className="flex flex-col mt-10">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="link" className="self-end hover:cursor-pointer">
               Add Expense
             </Button>
           </DialogTrigger>
-          <AddExpenseDialog />
+          <AddExpenseDialog categories={categories ?? []} accounts={accounts ?? []} setOpen={setOpen} />
         </Dialog>
-        <ExpenseList expenses={expenses ?? []} categories={categories ?? []} />
+        <ExpenseList expenses={expenses ?? []} categories={categories ?? []} accounts={accounts ?? []} />
       </div>
-      <PaginationBar totalPages={10} />
+      <PaginationBar totalPages={totalPages} />
     </div>
   );
 }

@@ -13,7 +13,7 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
-export const CREATE_ACCOUNT_MUTATION = gql`
+export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($CreateUserInput: CreateUserInput!) {
     createUser(CreateUserInput: $CreateUserInput) {
       ok
@@ -43,6 +43,57 @@ export const LOGOUT_MUTATION = gql`
   }
 `;
 
+// ACCOUNTS
+export const FIND_ACCOUNTS_QUERY = gql`
+  query FindAccounts {
+    findAccounts {
+      ok
+      error
+      accounts {
+        id
+        name
+        isActive
+        type
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const CREATE_ACCOUNT_MUTATION = gql`
+  mutation CreateAccount($createAccountInput: CreateAccountInput!) {
+    createAccount(CreateAccountInput: $createAccountInput) {
+      ok
+      error
+      account {
+        id
+        name
+        isActive
+        type
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const UPDATE_ACCOUNT_MUTATION = gql`
+  mutation UpdateAccount($updateAccountInput: UpdateAccountInput!) {
+    updateAccount(UpdateAccountInput: $updateAccountInput) {
+      ok
+      error
+      account {
+        id
+        name
+        isActive
+        type
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 // CATEGORIES
 
 export const CREATE_CATEGORY_MUTATION = gql`
