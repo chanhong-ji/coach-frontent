@@ -15,6 +15,8 @@ export default [
     route("/api/delete-category", "features/settings/api/delete-category-api.tsx"),
     route("/api/add-budget", "features/settings/api/add-budget-api.tsx"),
     route("/api/delete-budget", "features/settings/api/delete-budget-api.tsx"),
+    route("/api/add-account", "features/settings/api/add-account-api.tsx"),
+    // route("/api/delete-account", "features/settings/api/delete-account-api.tsx"),
   ]),
   route("/login", "features/auth/pages/login-page.tsx"),
   route("/join", "features/auth/pages/join-page.tsx"),

@@ -16,44 +16,68 @@ import {
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
 import AddAccountDialog from "./add-acount-dialog";
-
-type AccountType = "credit" | "debit" | "bank" | "paypal" | "gpay";
-
-type PaymentMethod = {
-  id: number;
-  type: AccountType;
-  name: string;
-  details: string;
-  isActive: boolean;
-};
+import { AccountType, type AccountDto } from "~/graphql/__generated__/graphql";
+import { useEffect, useState } from "react";
+import { useFetcher } from "react-router";
 
 type Props = {
   title?: string;
-  items?: PaymentMethod[];
+  accounts?: AccountDto[];
   className?: string;
 };
 
-// 더미 데이터
-const fallbackItems: PaymentMethod[] = [
-  { id: 1, type: "credit", name: "Credit Card", details: "**** 1234", isActive: true },
-  { id: 2, type: "debit", name: "Debit Card", details: "**** 5678", isActive: true },
-  { id: 3, type: "bank", name: "Bank Account", details: "Acme Bank", isActive: true },
-  { id: 4, type: "paypal", name: "PayPal", details: "user@example.com", isActive: true },
-  { id: 5, type: "gpay", name: "Google Pay", details: "user@gmail.com", isActive: true },
-];
+export default function AccountCard({ title = "Accounts", accounts, className }: Props) {
+  const fetcher = useFetcher();
+  const [addAccountOpen, setAddAccountOpen] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [deleteAccount, setDeleteAccount] = useState<AccountDto | null>(null);
 
-export default function AccountCard({ title = "Accounts", items = fallbackItems, className }: Props) {
+  const handleAddAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setAddAccountOpen(true);
+  };
+
+  const handleDeleteAccountClick = (e: React.MouseEvent<HTMLButtonElement>, account: AccountDto) => {
+    e.preventDefault();
+    setDeleteAccount(account);
+    setDeleteAccountOpen(true);
+  };
+
+  const handleDeleteAccount = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!deleteAccount) return;
+    fetcher.submit(
+      {
+        intent: "delete-account",
+        accountId: String(deleteAccount.id),
+      },
+      {
+        method: "post",
+        action: "/settings/api/delete-account",
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (fetcher.data?.ok) {
+      setDeleteAccountOpen(false);
+    }
+  }, [fetcher.data]);
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{title}</CardTitle>
-        <Dialog>
-          <DialogTrigger asChild>
+        <Dialog open={addAccountOpen} onOpenChange={setAddAccountOpen}>
+          <DialogTrigger asChild onClick={handleAddAccountClick}>
             <Button size="sm" variant="link" className="hover:cursor-pointer">
               Add Account
             </Button>
           </DialogTrigger>
-          <AddAccountDialog />
+          <AddAccountDialog
+            accountTypes={Object.values(AccountType).map((type) => type.toString())}
+            setOpen={setAddAccountOpen}
+          />
         </Dialog>
       </CardHeader>
 
@@ -61,26 +85,26 @@ export default function AccountCard({ title = "Accounts", items = fallbackItems,
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40">
+              <TableHead className="w-[35%]">Name</TableHead>
               <TableHead className="w-[35%]">Type</TableHead>
-              <TableHead className="w-[35%]">Details</TableHead>
               <TableHead className="w-[20%]">Status</TableHead>
               <TableHead className="w-[10%] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {items.map((m) => (
-              <TableRow key={m.id}>
+            {accounts?.map((account) => (
+              <TableRow key={account.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <span className="whitespace-nowrap">{m.name}</span>
+                    <span className="whitespace-nowrap">{account.name}</span>
                   </div>
                 </TableCell>
 
-                <TableCell className="text-muted-foreground">{m.details}</TableCell>
+                <TableCell className="text-muted-foreground">{account.type}</TableCell>
 
                 <TableCell>
-                  {m.isActive ? (
+                  {account.isActive ? (
                     <Badge variant="secondary" className="rounded-full">
                       Active
                     </Badge>
