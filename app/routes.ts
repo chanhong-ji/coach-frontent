@@ -11,6 +11,8 @@ export default [
   ...prefix("/settings", [
     index("features/settings/pages/settings-page.tsx"),
     route("/api/add-category", "features/settings/api/add-category-api.tsx"),
+    route("/api/update-category", "features/settings/api/update-category-api.tsx"),
+    route("/api/delete-category", "features/settings/api/delete-category-api.tsx"),
   ]),
   route("/login", "features/auth/pages/login-page.tsx"),
   route("/join", "features/auth/pages/join-page.tsx"),

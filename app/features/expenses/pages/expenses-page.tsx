@@ -12,8 +12,8 @@ import {
   isFutureMonth,
   fetchMonthlyExpenses,
   fetchMonthlyTotal,
-  fetchCategories,
-  fetchAccounts,
+  findCategories,
+  findAccounts,
   parseSearchParamsOrThrow,
   updateExpense,
 } from "../lib/loader-helpers";
@@ -43,8 +43,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const [monthlyTotalResult, expensesResult, categoriesResult, accountsResult] = await Promise.all([
     fetchMonthlyTotal(client, year, month),
     fetchMonthlyExpenses(client, year, month, page),
-    fetchCategories(client),
-    fetchAccounts(client),
+    findCategories(client),
+    findAccounts(client),
   ]);
 
   const {

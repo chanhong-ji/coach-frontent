@@ -83,11 +83,11 @@ export async function fetchMonthlyExpenses(client: GraphQLClient, year: number, 
   });
 }
 
-export async function fetchCategories(client: GraphQLClient) {
+export async function findCategories(client: GraphQLClient) {
   return client.request<FindCategoriesQuery, FindCategoriesQueryVariables>(FIND_CATEGORIES_QUERY);
 }
 
-export async function fetchAccounts(client: GraphQLClient) {
+export async function findAccounts(client: GraphQLClient) {
   return client.request<FindAccountsQuery, FindAccountsQueryVariables>(FIND_ACCOUNTS_QUERY);
 }
 

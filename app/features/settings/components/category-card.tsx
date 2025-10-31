@@ -15,36 +15,54 @@ import {
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
 import AddCategoryDialog from "./add-category-dialog";
-import { useState } from "react";
-
-type CategoryRow = {
-  id: number;
-  name: string;
-  icon: "groceries" | "rent" | "dining" | "transport" | "education";
-  usageCount: number;
-};
+import { useEffect, useState } from "react";
+import type { CategoryDto } from "~/graphql/__generated__/graphql";
+import { useFetcher } from "react-router";
 
 type Props = {
   title?: string;
-  items?: CategoryRow[];
+  categories?: CategoryDto[];
   className?: string;
 };
-
-// fake data (fallback)
-const fallbackItems: CategoryRow[] = [
-  { id: 1, name: "Groceries", icon: "groceries", usageCount: 12 },
-  { id: 2, name: "Rent/Mortgage", icon: "rent", usageCount: 1 },
-  { id: 3, name: "Dining Out", icon: "dining", usageCount: 5 },
-  { id: 4, name: "Transportation", icon: "transport", usageCount: 8 },
-  { id: 5, name: "Education", icon: "education", usageCount: 2 },
-];
 
 function pluralize(n: number, unit: string) {
   return `${n} ${unit}${n === 1 ? "" : "s"}`;
 }
 
-export default function CategoryCard({ title = "Categories", items = fallbackItems, className }: Props) {
+export default function CategoryCard({ title = "Categories", categories, className }: Props) {
+  const fetcher = useFetcher();
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
+  const [editCategoryOpen, setEditCategoryOpen] = useState(false);
+  const [editCategory, setEditCategory] = useState<CategoryDto | null>(null);
+  const [deleteCategoryOpen, setDeleteCategoryOpen] = useState(false);
+  const [deleteCategory, setDeleteCategory] = useState<CategoryDto | null>(null);
+
+  const handleEditCategory = (e: React.MouseEvent<HTMLButtonElement>, category: CategoryDto) => {
+    e.preventDefault();
+    setEditCategory(category);
+    setEditCategoryOpen(true);
+  };
+
+  const handleDeleteCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!deleteCategory) return;
+    fetcher.submit(
+      {
+        intent: "delete-category",
+        categoryId: String(deleteCategory.id),
+      },
+      {
+        method: "post",
+        action: "/settings/api/delete-category",
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (fetcher.data?.ok) {
+      setDeleteCategoryOpen(false);
+    }
+  }, [fetcher.data]);
 
   return (
     <Card className={className}>
@@ -71,51 +89,64 @@ export default function CategoryCard({ title = "Categories", items = fallbackIte
           </TableHeader>
 
           <TableBody>
-            {items.map((c) => (
-              <TableRow key={c.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <span>{c.name}</span>
-                  </div>
-                </TableCell>
+            <Dialog open={editCategoryOpen} onOpenChange={setEditCategoryOpen}>
+              <AlertDialog open={deleteCategoryOpen} onOpenChange={setDeleteCategoryOpen}>
+                {categories?.map((category) => (
+                  <TableRow key={category.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <span>{category.name}</span>
+                      </div>
+                    </TableCell>
 
-                <TableCell className="text-muted-foreground">{pluralize(c.usageCount, "transaction")}</TableCell>
+                    <TableCell className="text-muted-foreground">{pluralize(100, "transaction")}</TableCell>
 
-                <TableCell className="text-right">
-                  <div className="inline-flex items-center gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="icon" className="h-8 w-8" aria-label={`Edit ${c.name}`}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <EditCategoryDialog />
-                    </Dialog>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Delete ${c.name}`}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>해당 카테고리를 삭제할까요?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            이 작업은 되돌릴 수 없습니다. 삭제를 진행하시겠습니까?
-                          </AlertDialogDescription>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
-                            <Button type="submit" variant="destructive" className="hover:cursor-pointer">
-                              삭제
-                            </Button>
-                          </AlertDialogFooter>
-                        </AlertDialogHeader>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <DialogTrigger asChild onClick={(e) => handleEditCategory(e, category)}>
+                          <Button variant="outline" size="icon" className="h-8 w-8 hover:cursor-pointer">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+
+                        <AlertDialogTrigger asChild onClick={() => setDeleteCategory(category)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label={`Delete ${category.name}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        {fetcher.data?.error && <p className="text-red-500">{fetcher.data.error}</p>}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {editCategory && <EditCategoryDialog category={editCategory} setOpen={setEditCategoryOpen} />}
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>해당 카테고리를 삭제할까요?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      이 작업은 되돌릴 수 없습니다. 삭제를 진행하시겠습니까?
+                    </AlertDialogDescription>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
+                      <Button
+                        type="submit"
+                        variant="destructive"
+                        className="hover:cursor-pointer"
+                        onClick={handleDeleteCategory}
+                      >
+                        삭제
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogHeader>
+                </AlertDialogContent>
+              </AlertDialog>
+            </Dialog>
           </TableBody>
         </Table>
       </CardContent>
