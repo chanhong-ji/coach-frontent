@@ -21,28 +21,26 @@ import {
   AlertDialogCancel,
 } from "~/common/components/ui/alert-dialog";
 import { Form } from "react-router";
+import type { CategoryDto, ExpenseDto } from "~/graphql/__generated__/graphql";
+import { DateTime } from "luxon";
 
-export function ExpenseList() {
+export function ExpenseList({ expenses, categories }: { expenses: ExpenseDto[]; categories: CategoryDto[] }) {
   return (
     <div className="w-2xl space-y-4 border-2 border-accent-foreground/2 mt-3">
-      {Array.from({ length: 10 }).map((_, index) => (
+      {expenses.map((expense, index) => (
         <Item key={index} variant="outline">
           <ItemContent>
-            <ItemDescription>Tuesday, 27th October 2025</ItemDescription>
-            <ItemTitle className="">Movie Tickets with friends</ItemTitle>
-            {/* <ItemDescription>memo</ItemDescription> */}
-            <ItemDescription className="text-xs">
-              memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo memo memo memo memo memo memo
-              memo memo memo memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo memo memo memo
-              memo memo memo memo memo memo memo memo memo memo memo memo memo memomemo memo memo memo memo memo memo
-              memo memo memo memo memo memo memo memo memo
-            </ItemDescription>
+            <ItemDescription>{DateTime.fromISO(expense.postedAt as string).toFormat("yyyy-MM-dd")}</ItemDescription>
+            <ItemTitle className="">{expense.name}</ItemTitle>
+            <ItemDescription className="text-xs">{expense.memo}</ItemDescription>
             <div className="flex w-full flex-wrap gap-2">
-              <Badge variant="secondary">Food</Badge>
+              <Badge variant="secondary">
+                {categories.find((category) => category.id === expense.categoryId)?.name ?? "Unknown"}
+              </Badge>
             </div>
           </ItemContent>
           <ItemContent>
-            <ItemTitle>100000 원</ItemTitle>
+            <ItemTitle>{expense.amount.toLocaleString()} 원</ItemTitle>
           </ItemContent>
           <ItemActions>
             <AlertDialog>

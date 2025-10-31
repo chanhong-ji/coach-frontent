@@ -44,6 +44,8 @@ export enum AccountType {
 
 export type BudgetDto = {
   __typename?: 'BudgetDto';
+  /** 카테고리 */
+  category?: Maybe<CategoryDto>;
   /** 예산 ID */
   id: Scalars['Int']['output'];
   /** 예산 금액 */
@@ -208,6 +210,23 @@ export type FindAccountsOutput = {
   ok: Scalars['Boolean']['output'];
 };
 
+export type FindBudgetInput = {
+  /** 월 */
+  months: Array<Scalars['Int']['input']>;
+  /** 연도 */
+  year: Scalars['Int']['input'];
+};
+
+export type FindBudgetOutput = {
+  __typename?: 'FindBudgetOutput';
+  /** 예산 목록 */
+  budgets?: Maybe<Array<BudgetDto>>;
+  /** 에러 메시지 */
+  error?: Maybe<Scalars['String']['output']>;
+  /** 성공 여부 */
+  ok: Scalars['Boolean']['output'];
+};
+
 export type FindCategoriesOutput = {
   __typename?: 'FindCategoriesOutput';
   /** 카테고리 목록 */
@@ -309,6 +328,8 @@ export type MonthlyExpenseTotalDto = {
   __typename?: 'MonthlyExpenseTotalDto';
   /** 월 */
   month: Scalars['Int']['output'];
+  /** 총 건수 */
+  totalCount: Scalars['Int']['output'];
   /** 지출 합계 */
   totalExpense: Scalars['Float']['output'];
 };
@@ -393,12 +414,18 @@ export type MutationUpsertBudgetArgs = {
 export type Query = {
   __typename?: 'Query';
   findAccounts: FindAccountsOutput;
+  findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
   findExpenseMonthly: FindExpenseMonthlyOutput;
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
   me: MeOutput;
   test: Scalars['Boolean']['output'];
+};
+
+
+export type QueryFindBudgetsArgs = {
+  FindBudgetInput: FindBudgetInput;
 };
 
 
@@ -525,11 +552,105 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type CreateCategoryMutationVariables = Exact<{
+  createCategoryInput: CreateCategoryInput;
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CreateCategoryOutput', ok: boolean, error?: string | null, category?: { __typename?: 'CategoryDto', id: number, name: string, sortOrder: number } | null } };
+
+export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindCategoriesQuery = { __typename?: 'Query', findCategories: { __typename?: 'FindCategoriesOutput', ok: boolean, error?: string | null, categories?: Array<{ __typename?: 'CategoryDto', id: number, name: string, sortOrder: number }> | null } };
+
+export type UpdateCategoryMutationVariables = Exact<{
+  updateCategoryInput: UpdateCategoryInput;
+}>;
+
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'UpdateCategoryOutput', ok: boolean, error?: string | null, category?: { __typename?: 'CategoryDto', id: number, name: string, sortOrder: number } | null } };
+
+export type DeleteCategoryMutationVariables = Exact<{
+  deleteCategoryInput: DeleteCategoryInput;
+}>;
+
+
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'DeleteCategoryOutput', error?: string | null, ok: boolean } };
+
+export type CreateExpenseMutationVariables = Exact<{
+  createExpenseInput: CreateExpenseInput;
+}>;
+
+
+export type CreateExpenseMutation = { __typename?: 'Mutation', createExpense: { __typename?: 'CreateExpenseOutput', ok: boolean, error?: string | null, expense?: { __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null } | null } };
+
+export type UpdateExpenseMutationVariables = Exact<{
+  updateExpenseInput: UpdateExpenseInput;
+}>;
+
+
+export type UpdateExpenseMutation = { __typename?: 'Mutation', updateExpense: { __typename?: 'UpdateExpenseOutput', ok: boolean, error?: string | null, expense?: { __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null } | null } };
+
+export type DeleteExpenseMutationVariables = Exact<{
+  deleteExpenseInput: DeleteExpenseInput;
+}>;
+
+
+export type DeleteExpenseMutation = { __typename?: 'Mutation', deleteExpense: { __typename?: 'DeleteExpenseOutput', ok: boolean, error?: string | null } };
+
+export type FindExpensesWithCategoriesQueryVariables = Exact<{
+  findCategoryMonthlyExpenseInput: FindCategoryMonthlyExpenseInput;
+}>;
+
+
+export type FindExpensesWithCategoriesQuery = { __typename?: 'Query', findCategoryMonthlyExpense: { __typename?: 'FindCategoryMonthlyExpenseOutput', ok: boolean, error?: string | null, result?: Array<{ __typename?: 'CategoryExpense', categoryId: number, totalExpense: number }> | null } };
+
+export type FindMonthlyExpenseTotalQueryVariables = Exact<{
+  findMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
+}>;
+
+
+export type FindMonthlyExpenseTotalQuery = { __typename?: 'Query', findMonthlyExpenseTotal: { __typename?: 'FindMonthlyExpenseTotalOutput', ok: boolean, error?: string | null, months?: Array<{ __typename?: 'MonthlyExpenseTotalDto', month: number, totalExpense: number, totalCount: number }> | null } };
+
+export type FindExpensesQueryVariables = Exact<{
+  findExpenseMonthlyInput: FindExpenseMonthlyInput;
+}>;
+
+
+export type FindExpensesQuery = { __typename?: 'Query', findExpenseMonthly: { __typename?: 'FindExpenseMonthlyOutput', totalCount?: number | null, ok: boolean, error?: string | null, expenses?: Array<{ __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null }> | null } };
+
+export type UpsertBudgetMutationVariables = Exact<{
+  upsertBudgetInput: UpsertBudgetInput;
+}>;
+
+
+export type UpsertBudgetMutation = { __typename?: 'Mutation', upsertBudget: { __typename?: 'UpsertBudgetOutput', ok: boolean, error?: string | null, budget?: { __typename?: 'BudgetDto', id: number, yearMonth: string, totalAmount: number } | null } };
+
+export type DeleteBudgetMutationVariables = Exact<{
+  deleteBudgetInput: DeleteBudgetInput;
+}>;
+
+
+export type DeleteBudgetMutation = { __typename?: 'Mutation', deleteBudget: { __typename?: 'DeleteBudgetOutput', ok: boolean, error?: string | null } };
+
 
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"LoginInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"LoginInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"LoginInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"CreateUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"CreateUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"CreateUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"}}]}}]} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+export const CreateCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createCategoryInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCategoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"CreateCategoryInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createCategoryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}}]}}]}}]}}]} as unknown as DocumentNode<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const FindCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}}]}}]}}]}}]} as unknown as DocumentNode<FindCategoriesQuery, FindCategoriesQueryVariables>;
+export const UpdateCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateCategoryInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateCategoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"UpdateCategoryInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateCategoryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+export const DeleteCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteCategoryInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteCategoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"DeleteCategoryInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteCategoryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export const CreateExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createExpenseInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateExpenseInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"CreateExpenseInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createExpenseInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"expense"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"postedAt"}},{"kind":"Field","name":{"kind":"Name","value":"accountId"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantText"}},{"kind":"Field","name":{"kind":"Name","value":"memo"}}]}}]}}]}}]} as unknown as DocumentNode<CreateExpenseMutation, CreateExpenseMutationVariables>;
+export const UpdateExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateExpenseInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateExpenseInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"UpdateExpenseInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateExpenseInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"expense"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"postedAt"}},{"kind":"Field","name":{"kind":"Name","value":"accountId"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantText"}},{"kind":"Field","name":{"kind":"Name","value":"memo"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<UpdateExpenseMutation, UpdateExpenseMutationVariables>;
+export const DeleteExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteExpenseInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteExpenseInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"DeleteExpenseInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteExpenseInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DeleteExpenseMutation, DeleteExpenseMutationVariables>;
+export const FindExpensesWithCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindExpensesWithCategories"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"findCategoryMonthlyExpenseInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FindCategoryMonthlyExpenseInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findCategoryMonthlyExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"FindCategoryMonthlyExpenseInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"findCategoryMonthlyExpenseInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"totalExpense"}}]}}]}}]}}]} as unknown as DocumentNode<FindExpensesWithCategoriesQuery, FindExpensesWithCategoriesQueryVariables>;
+export const FindMonthlyExpenseTotalDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindMonthlyExpenseTotal"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"findMonthlyExpenseTotalInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FindMonthlyExpenseTotalInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findMonthlyExpenseTotal"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"FindMonthlyExpenseTotalInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"findMonthlyExpenseTotalInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"months"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"month"}},{"kind":"Field","name":{"kind":"Name","value":"totalExpense"}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]}}]} as unknown as DocumentNode<FindMonthlyExpenseTotalQuery, FindMonthlyExpenseTotalQueryVariables>;
+export const FindExpensesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindExpenses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"findExpenseMonthlyInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FindExpenseMonthlyInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findExpenseMonthly"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"FindExpenseMonthlyInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"findExpenseMonthlyInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"postedAt"}},{"kind":"Field","name":{"kind":"Name","value":"accountId"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantId"}},{"kind":"Field","name":{"kind":"Name","value":"merchantText"}},{"kind":"Field","name":{"kind":"Name","value":"memo"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<FindExpensesQuery, FindExpensesQueryVariables>;
+export const UpsertBudgetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertBudget"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"upsertBudgetInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpsertBudgetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertBudget"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"UpsertBudgetInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"upsertBudgetInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"budget"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"yearMonth"}},{"kind":"Field","name":{"kind":"Name","value":"totalAmount"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertBudgetMutation, UpsertBudgetMutationVariables>;
+export const DeleteBudgetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteBudget"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteBudgetInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteBudgetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteBudget"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"DeleteBudgetInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteBudgetInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DeleteBudgetMutation, DeleteBudgetMutationVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -566,6 +687,8 @@ export enum AccountType {
 
 export type BudgetDto = {
   __typename?: 'BudgetDto';
+  /** 카테고리 */
+  category?: Maybe<CategoryDto>;
   /** 예산 ID */
   id: Scalars['Int']['output'];
   /** 예산 금액 */
@@ -730,6 +853,23 @@ export type FindAccountsOutput = {
   ok: Scalars['Boolean']['output'];
 };
 
+export type FindBudgetInput = {
+  /** 월 */
+  months: Array<Scalars['Int']['input']>;
+  /** 연도 */
+  year: Scalars['Int']['input'];
+};
+
+export type FindBudgetOutput = {
+  __typename?: 'FindBudgetOutput';
+  /** 예산 목록 */
+  budgets?: Maybe<Array<BudgetDto>>;
+  /** 에러 메시지 */
+  error?: Maybe<Scalars['String']['output']>;
+  /** 성공 여부 */
+  ok: Scalars['Boolean']['output'];
+};
+
 export type FindCategoriesOutput = {
   __typename?: 'FindCategoriesOutput';
   /** 카테고리 목록 */
@@ -831,6 +971,8 @@ export type MonthlyExpenseTotalDto = {
   __typename?: 'MonthlyExpenseTotalDto';
   /** 월 */
   month: Scalars['Int']['output'];
+  /** 총 건수 */
+  totalCount: Scalars['Int']['output'];
   /** 지출 합계 */
   totalExpense: Scalars['Float']['output'];
 };
@@ -915,12 +1057,18 @@ export type MutationUpsertBudgetArgs = {
 export type Query = {
   __typename?: 'Query';
   findAccounts: FindAccountsOutput;
+  findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
   findExpenseMonthly: FindExpenseMonthlyOutput;
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
   me: MeOutput;
   test: Scalars['Boolean']['output'];
+};
+
+
+export type QueryFindBudgetsArgs = {
+  FindBudgetInput: FindBudgetInput;
 };
 
 
@@ -1046,3 +1194,85 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type CreateCategoryMutationVariables = Exact<{
+  createCategoryInput: CreateCategoryInput;
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CreateCategoryOutput', ok: boolean, error?: string | null, category?: { __typename?: 'CategoryDto', id: number, name: string, sortOrder: number } | null } };
+
+export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindCategoriesQuery = { __typename?: 'Query', findCategories: { __typename?: 'FindCategoriesOutput', ok: boolean, error?: string | null, categories?: Array<{ __typename?: 'CategoryDto', id: number, name: string, sortOrder: number }> | null } };
+
+export type UpdateCategoryMutationVariables = Exact<{
+  updateCategoryInput: UpdateCategoryInput;
+}>;
+
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'UpdateCategoryOutput', ok: boolean, error?: string | null, category?: { __typename?: 'CategoryDto', id: number, name: string, sortOrder: number } | null } };
+
+export type DeleteCategoryMutationVariables = Exact<{
+  deleteCategoryInput: DeleteCategoryInput;
+}>;
+
+
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'DeleteCategoryOutput', error?: string | null, ok: boolean } };
+
+export type CreateExpenseMutationVariables = Exact<{
+  createExpenseInput: CreateExpenseInput;
+}>;
+
+
+export type CreateExpenseMutation = { __typename?: 'Mutation', createExpense: { __typename?: 'CreateExpenseOutput', ok: boolean, error?: string | null, expense?: { __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null } | null } };
+
+export type UpdateExpenseMutationVariables = Exact<{
+  updateExpenseInput: UpdateExpenseInput;
+}>;
+
+
+export type UpdateExpenseMutation = { __typename?: 'Mutation', updateExpense: { __typename?: 'UpdateExpenseOutput', ok: boolean, error?: string | null, expense?: { __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null } | null } };
+
+export type DeleteExpenseMutationVariables = Exact<{
+  deleteExpenseInput: DeleteExpenseInput;
+}>;
+
+
+export type DeleteExpenseMutation = { __typename?: 'Mutation', deleteExpense: { __typename?: 'DeleteExpenseOutput', ok: boolean, error?: string | null } };
+
+export type FindExpensesWithCategoriesQueryVariables = Exact<{
+  findCategoryMonthlyExpenseInput: FindCategoryMonthlyExpenseInput;
+}>;
+
+
+export type FindExpensesWithCategoriesQuery = { __typename?: 'Query', findCategoryMonthlyExpense: { __typename?: 'FindCategoryMonthlyExpenseOutput', ok: boolean, error?: string | null, result?: Array<{ __typename?: 'CategoryExpense', categoryId: number, totalExpense: number }> | null } };
+
+export type FindMonthlyExpenseTotalQueryVariables = Exact<{
+  findMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
+}>;
+
+
+export type FindMonthlyExpenseTotalQuery = { __typename?: 'Query', findMonthlyExpenseTotal: { __typename?: 'FindMonthlyExpenseTotalOutput', ok: boolean, error?: string | null, months?: Array<{ __typename?: 'MonthlyExpenseTotalDto', month: number, totalExpense: number, totalCount: number }> | null } };
+
+export type FindExpensesQueryVariables = Exact<{
+  findExpenseMonthlyInput: FindExpenseMonthlyInput;
+}>;
+
+
+export type FindExpensesQuery = { __typename?: 'Query', findExpenseMonthly: { __typename?: 'FindExpenseMonthlyOutput', totalCount?: number | null, ok: boolean, error?: string | null, expenses?: Array<{ __typename?: 'ExpenseDto', id: number, name: string, amount: number, postedAt: unknown, accountId?: number | null, categoryId?: number | null, merchantId?: number | null, merchantText?: string | null, memo?: string | null }> | null } };
+
+export type UpsertBudgetMutationVariables = Exact<{
+  upsertBudgetInput: UpsertBudgetInput;
+}>;
+
+
+export type UpsertBudgetMutation = { __typename?: 'Mutation', upsertBudget: { __typename?: 'UpsertBudgetOutput', ok: boolean, error?: string | null, budget?: { __typename?: 'BudgetDto', id: number, yearMonth: string, totalAmount: number } | null } };
+
+export type DeleteBudgetMutationVariables = Exact<{
+  deleteBudgetInput: DeleteBudgetInput;
+}>;
+
+
+export type DeleteBudgetMutation = { __typename?: 'Mutation', deleteBudget: { __typename?: 'DeleteBudgetOutput', ok: boolean, error?: string | null } };
