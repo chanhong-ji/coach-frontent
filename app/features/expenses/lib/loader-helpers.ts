@@ -5,6 +5,9 @@ import type {
   CreateExpenseInput,
   CreateExpenseMutation,
   CreateExpenseMutationVariables,
+  DeleteExpenseInput,
+  DeleteExpenseMutation,
+  DeleteExpenseMutationVariables,
   FindAccountsQuery,
   FindAccountsQueryVariables,
   FindCategoriesQuery,
@@ -13,13 +16,18 @@ import type {
   FindExpensesQueryVariables,
   FindMonthlyExpenseTotalQuery,
   FindMonthlyExpenseTotalQueryVariables,
+  UpdateExpenseInput,
+  UpdateExpenseMutation,
+  UpdateExpenseMutationVariables,
 } from "~/graphql/__generated__/graphql";
 import {
   CREATE_EXPENSE_MUTATION,
+  DELETE_EXPENSE_MUTATION,
   FIND_ACCOUNTS_QUERY,
   FIND_CATEGORIES_QUERY,
   FIND_EXPENSES_QUERY,
   FIND_MONTHLY_EXPENSE_TOTAL_QUERY,
+  UPDATE_EXPENSE_MUTATION,
 } from "~/graphql/queries";
 
 const paramSchema = z.object({
@@ -86,5 +94,17 @@ export async function fetchAccounts(client: GraphQLClient) {
 export async function createExpense(client: GraphQLClient, input: CreateExpenseInput) {
   return client.request<CreateExpenseMutation, CreateExpenseMutationVariables>(CREATE_EXPENSE_MUTATION, {
     createExpenseInput: input,
+  });
+}
+
+export async function updateExpense(client: GraphQLClient, input: UpdateExpenseInput) {
+  return client.request<UpdateExpenseMutation, UpdateExpenseMutationVariables>(UPDATE_EXPENSE_MUTATION, {
+    updateExpenseInput: input,
+  });
+}
+
+export async function deleteExpense(client: GraphQLClient, input: DeleteExpenseInput) {
+  return client.request<DeleteExpenseMutation, DeleteExpenseMutationVariables>(DELETE_EXPENSE_MUTATION, {
+    deleteExpenseInput: input,
   });
 }

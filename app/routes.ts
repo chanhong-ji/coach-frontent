@@ -6,6 +6,7 @@ export default [
     index("features/expenses/pages/expenses-redirection-page.tsx"), //
     route("/:year/:month", "features/expenses/pages/expenses-page.tsx"),
     route("/api/add-expense", "features/expenses/api/add-expense-api.tsx"),
+    route("/api/delete-expense", "features/expenses/api/delete-expense-api.tsx"),
   ]),
   route("/login", "features/auth/pages/login-page.tsx"),
   route("/join", "features/auth/pages/join-page.tsx"),

@@ -15,8 +15,20 @@ import {
   fetchCategories,
   fetchAccounts,
   parseSearchParamsOrThrow,
+  updateExpense,
 } from "../lib/loader-helpers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { z } from "zod";
+
+const editExpenseSchema = z.object({
+  id: z.coerce.number(),
+  name: z.coerce.string().min(1),
+  amount: z.coerce.number().min(0),
+  date: z.coerce.date(),
+  accountId: z.coerce.string(),
+  categoryId: z.coerce.string(),
+  memo: z.coerce.string().optional(),
+});
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { year, month } = parseParamsOrThrow(params);
@@ -61,12 +73,45 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return { year, month, totalExpense, totalCount, expenses, categories, accounts };
 };
 
-// export const action = async ({ request, params }: Route.ActionArgs) => {};
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = createClient(request);
+  const formData = await request.formData();
+  const parsedData = editExpenseSchema.safeParse(Object.fromEntries(formData));
+  if (!parsedData.success) {
+    console.log(parsedData.error, ":parsedData.error from action");
+    throw new Error("Invalid data");
+  }
 
-export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
+  const { id, name, amount, date, accountId, categoryId, memo } = parsedData.data;
+  const response = await updateExpense(client, {
+    id,
+    name,
+    amount,
+    postedAt: date.toISOString(),
+    accountId: Number(accountId),
+    categoryId: Number(categoryId),
+    memo,
+  });
+
+  if (!response.updateExpense.ok) {
+    console.log(response.updateExpense.error, ":response.updateExpense.error from action");
+    throw new Error(response.updateExpense.error ?? "Unknown error");
+  }
+  return { ok: true };
+};
+
+export default function ExpensesPage({ loaderData, actionData }: Route.ComponentProps) {
   const { year, month, totalExpense, totalCount, expenses, categories, accounts } = loaderData;
   const totalPages = Math.ceil(totalCount / 10);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  useEffect(() => {
+    if (actionData?.ok) {
+      setEditOpen(false);
+    }
+  }, [actionData, setEditOpen]);
+
   return (
     <div className="flex flex-col items-center justify-center bg-background p-5">
       <DateCard year={year} month={month} />
