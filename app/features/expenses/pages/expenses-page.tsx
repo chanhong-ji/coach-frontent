@@ -16,9 +16,11 @@ import {
   findAccounts,
   parseSearchParamsOrThrow,
   updateExpense,
+  getLoggedInUser,
 } from "../lib/loader-helpers";
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { redirect } from "react-router";
 
 const editExpenseSchema = z.object({
   id: z.coerce.number(),
@@ -31,14 +33,18 @@ const editExpenseSchema = z.object({
 });
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = createClient(request);
+  const user = await getLoggedInUser(client);
+  if (!user) {
+    return redirect("/login");
+  }
+
   const { year, month } = parseParamsOrThrow(params);
   const { page } = parseSearchParamsOrThrow(request.url);
 
   if (isFutureMonth(year, month)) {
     throw new Error("Future month");
   }
-
-  const { client } = createClient(request);
 
   const [monthlyTotalResult, expensesResult, categoriesResult, accountsResult] = await Promise.all([
     findMonthlyExpenseTotal(client, year, [month]),

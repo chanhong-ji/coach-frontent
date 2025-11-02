@@ -3,15 +3,21 @@ import BudgetCard from "../components/budget-card";
 import AccountCard from "../components/account-card";
 import type { Route } from "./+types/settings-page";
 import { createClient } from "~/client";
-import { findAccounts, findBudgets, findCategories } from "~/features/expenses/lib/loader-helpers";
+import { findAccounts, findBudgets, findCategories, getLoggedInUser } from "~/features/expenses/lib/loader-helpers";
 import { DateTime } from "luxon";
+import { redirect } from "react-router";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = createClient(request);
+  const user = await getLoggedInUser(client);
+  if (!user) {
+    return redirect("/login");
+  }
+
   const today = DateTime.now();
   const thisYear = today.year;
   const thisMonth = today.month;
 
-  const { client } = createClient(request);
   const [
     {
       findCategories: { categories },

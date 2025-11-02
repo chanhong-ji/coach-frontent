@@ -25,6 +25,8 @@ import type {
   FindSummaryInput,
   FindSummaryQuery,
   FindSummaryQueryVariables,
+  MeQuery,
+  MeQueryVariables,
   UpdateExpenseInput,
   UpdateExpenseMutation,
   UpdateExpenseMutationVariables,
@@ -42,6 +44,7 @@ import {
   FIND_EXPENSES_QUERY,
   FIND_MONTHLY_EXPENSE_TOTAL_QUERY,
   FIND_SUMMARY_QUERY,
+  ME_QUERY,
   UPDATE_EXPENSE_MUTATION,
   UPSERT_BUDGET_MUTATION,
 } from "~/graphql/queries";
@@ -86,6 +89,13 @@ export async function findMonthlyExpenseTotal(client: GraphQLClient, year: numbe
       },
     },
   );
+}
+
+export async function getLoggedInUser(client: GraphQLClient) {
+  const {
+    me: { user },
+  } = await client.request<MeQuery, MeQueryVariables>(ME_QUERY);
+  return user ?? null;
 }
 
 export async function fetchMonthlyExpenses(client: GraphQLClient, year: number, month: number, page: number) {

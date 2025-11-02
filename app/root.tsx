@@ -3,8 +3,8 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { Navigation } from "./common/components/navigation";
 import { createClient } from "./client";
-import type { MeQuery, MeQueryVariables } from "./graphql/__generated__/graphql";
-import { ME_QUERY } from "./graphql/queries";
+import type { MeDto } from "./graphql/__generated__/graphql";
+import { getLoggedInUser } from "./features/expenses/lib/loader-helpers";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -38,11 +38,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const cookie = request.headers.get("Cookie");
+  const token = cookie
+    ?.split("; ")
+    .find((cookie) => cookie.startsWith("auth_token="))
+    ?.split("=")[1];
+
+  if (!token) {
+    return { user: null };
+  }
+
   const { client } = createClient(request);
-  const {
-    me: { user },
-  } = await client.request<MeQuery, MeQueryVariables>(ME_QUERY);
-  return { user: user ?? null };
+  const user: MeDto | null = await getLoggedInUser(client);
+  return { user };
 };
 
 export default function App({ loaderData }: Route.ComponentProps) {

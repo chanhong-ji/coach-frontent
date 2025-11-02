@@ -1,6 +1,7 @@
 import { type RouteConfig, index, prefix, route } from "@react-router/dev/routes";
 
 export default [
+  index("features/home/pages/home-redirection-page.tsx"),
   route("/dashboard", "features/dashboard/pages/dashboard-page.tsx"), //
   ...prefix("/expenses", [
     index("features/expenses/pages/expenses-redirection-page.tsx"), //

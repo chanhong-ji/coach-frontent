@@ -3,13 +3,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/common/components/ui/tabs";
 import { SummaryTab } from "../tabs/summary-tab";
 import { createClient } from "~/client";
-import { findMonthlyExpenseTotal, findSummary } from "~/features/expenses/lib/loader-helpers";
+import { findMonthlyExpenseTotal, findSummary, getLoggedInUser } from "~/features/expenses/lib/loader-helpers";
 import { DateTime } from "luxon";
+import { redirect } from "react-router";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = createClient(request);
+  const user = await getLoggedInUser(client);
+  if (!user) {
+    return redirect("/login");
+  }
+
   const today = DateTime.now();
   const months = Array.from({ length: today.month }, (_, i) => today.month - i);
-  const { client } = createClient(request);
   const [
     {
       findSummary: { summary },
