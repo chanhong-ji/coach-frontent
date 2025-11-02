@@ -31,10 +31,18 @@ export default function AccountCard({ title = "Accounts", accounts, className }:
   const [addAccountOpen, setAddAccountOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [deleteAccount, setDeleteAccount] = useState<AccountDto | null>(null);
+  const [editAccount, setEditAccount] = useState<AccountDto | null>(null);
+  const [editAccountOpen, setEditAccountOpen] = useState(false);
 
   const handleAddAccountClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setAddAccountOpen(true);
+  };
+
+  const handleEditAccountClick = (e: React.MouseEvent<HTMLButtonElement>, account: AccountDto) => {
+    e.preventDefault();
+    setEditAccount(account);
+    setEditAccountOpen(true);
   };
 
   const handleDeleteAccountClick = (e: React.MouseEvent<HTMLButtonElement>, account: AccountDto) => {
@@ -93,63 +101,69 @@ export default function AccountCard({ title = "Accounts", accounts, className }:
           </TableHeader>
 
           <TableBody>
-            {accounts?.map((account) => (
-              <TableRow key={account.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <span className="whitespace-nowrap">{account.name}</span>
-                  </div>
-                </TableCell>
+            <Dialog open={editAccountOpen} onOpenChange={setEditAccountOpen}>
+              <AlertDialog open={deleteAccountOpen} onOpenChange={setDeleteAccountOpen}>
+                {accounts?.map((account) => (
+                  <TableRow key={account.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <span className="whitespace-nowrap">{account.name}</span>
+                      </div>
+                    </TableCell>
 
-                <TableCell className="text-muted-foreground">{account.type}</TableCell>
+                    <TableCell className="text-muted-foreground">{account.type}</TableCell>
 
-                <TableCell>
-                  {account.isActive ? (
-                    <Badge variant="secondary" className="rounded-full">
-                      Active
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="rounded-full">
-                      Inactive
-                    </Badge>
-                  )}
-                </TableCell>
+                    <TableCell>
+                      {account.isActive ? (
+                        <Badge variant="secondary" className="rounded-full">
+                          Active
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="rounded-full">
+                          Inactive
+                        </Badge>
+                      )}
+                    </TableCell>
 
-                <TableCell className="text-right">
-                  <div className="inline-flex items-center gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="icon" className="h-8 w-8">
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <EditAccountDialog />
-                    </Dialog>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>해당 결제 수단을 삭제할까요?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            이 작업은 되돌릴 수 없습니다. 삭제를 진행하시겠습니까?
-                          </AlertDialogDescription>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
-                            <Button type="submit" variant="destructive" className="hover:cursor-pointer">
-                              삭제
-                            </Button>
-                          </AlertDialogFooter>
-                        </AlertDialogHeader>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <DialogTrigger asChild onClick={(e) => handleEditAccountClick(e, account)}>
+                          <Button variant="outline" size="icon" className="h-8 w-8">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <AlertDialogTrigger asChild onClick={(e) => handleDeleteAccountClick(e, account)}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        {fetcher.data?.error && <p className="text-red-500">{fetcher.data.error}</p>}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {editAccount && <EditAccountDialog account={editAccount} setOpen={setEditAccountOpen} />}
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>해당 결제 수단을 삭제할까요?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      결제 수단을 삭제하면 관련된 모든 지출 내역이 삭제됩니다. 삭제를 진행하시겠습니까?
+                    </AlertDialogDescription>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="hover:cursor-pointer">취소</AlertDialogCancel>
+                      <Button
+                        type="submit"
+                        variant="destructive"
+                        className="hover:cursor-pointer"
+                        onClick={handleDeleteAccount}
+                      >
+                        삭제
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogHeader>
+                </AlertDialogContent>
+              </AlertDialog>
+            </Dialog>
           </TableBody>
         </Table>
       </CardContent>

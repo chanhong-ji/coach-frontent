@@ -5,17 +5,26 @@ import { Button } from "~/common/components/ui/button";
 import { SelectPair } from "~/features/expenses/components/select-pair";
 import type { CategoryDto } from "~/graphql/__generated__/graphql";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useEffect } from "react";
 
 export default function AddBudgetDialog({
   categories,
   year,
   month,
+  setOpen,
 }: {
   categories: CategoryDto[];
   year: number;
   month: number;
+  setOpen: (open: boolean) => void;
 }) {
   const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.data?.ok) {
+      setOpen(false);
+    }
+  }, [fetcher.data]);
 
   return (
     <DialogContent>

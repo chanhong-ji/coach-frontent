@@ -21,6 +21,7 @@ type Documents = {
     "\n  query FindAccounts {\n    findAccounts {\n      ok\n      error\n      accounts {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.FindAccountsDocument,
     "\n  mutation CreateAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(CreateAccountInput: $createAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.CreateAccountDocument,
     "\n  mutation UpdateAccount($updateAccountInput: UpdateAccountInput!) {\n    updateAccount(UpdateAccountInput: $updateAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.UpdateAccountDocument,
+    "\n  mutation DeleteAccount($deleteAccountInput: DeleteAccountInput!) {\n    deleteAccount(DeleteAccountInput: $deleteAccountInput) {\n      ok\n      error\n    }\n  }\n": typeof types.DeleteAccountDocument,
     "\n  mutation CreateCategory($createCategoryInput: CreateCategoryInput!) {\n    createCategory(CreateCategoryInput: $createCategoryInput) {\n      ok\n      error\n      category {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": typeof types.CreateCategoryDocument,
     "\n  query FindCategories {\n    findCategories {\n      ok\n      error\n      categories {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": typeof types.FindCategoriesDocument,
     "\n  mutation UpdateCategory($updateCategoryInput: UpdateCategoryInput!) {\n    updateCategory(UpdateCategoryInput: $updateCategoryInput) {\n      ok\n      error\n      category {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": typeof types.UpdateCategoryDocument,
@@ -43,6 +44,7 @@ const documents: Documents = {
     "\n  query FindAccounts {\n    findAccounts {\n      ok\n      error\n      accounts {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.FindAccountsDocument,
     "\n  mutation CreateAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(CreateAccountInput: $createAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.CreateAccountDocument,
     "\n  mutation UpdateAccount($updateAccountInput: UpdateAccountInput!) {\n    updateAccount(UpdateAccountInput: $updateAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.UpdateAccountDocument,
+    "\n  mutation DeleteAccount($deleteAccountInput: DeleteAccountInput!) {\n    deleteAccount(DeleteAccountInput: $deleteAccountInput) {\n      ok\n      error\n    }\n  }\n": types.DeleteAccountDocument,
     "\n  mutation CreateCategory($createCategoryInput: CreateCategoryInput!) {\n    createCategory(CreateCategoryInput: $createCategoryInput) {\n      ok\n      error\n      category {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": types.CreateCategoryDocument,
     "\n  query FindCategories {\n    findCategories {\n      ok\n      error\n      categories {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": types.FindCategoriesDocument,
     "\n  mutation UpdateCategory($updateCategoryInput: UpdateCategoryInput!) {\n    updateCategory(UpdateCategoryInput: $updateCategoryInput) {\n      ok\n      error\n      category {\n        id\n        name\n        sortOrder\n      }\n    }\n  }\n": types.UpdateCategoryDocument,
@@ -100,6 +102,10 @@ export function graphql(source: "\n  mutation CreateAccount($createAccountInput:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateAccount($updateAccountInput: UpdateAccountInput!) {\n    updateAccount(UpdateAccountInput: $updateAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateAccount($updateAccountInput: UpdateAccountInput!) {\n    updateAccount(UpdateAccountInput: $updateAccountInput) {\n      ok\n      error\n      account {\n        id\n        name\n        isActive\n        type\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteAccount($deleteAccountInput: DeleteAccountInput!) {\n    deleteAccount(DeleteAccountInput: $deleteAccountInput) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteAccount($deleteAccountInput: DeleteAccountInput!) {\n    deleteAccount(DeleteAccountInput: $deleteAccountInput) {\n      ok\n      error\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

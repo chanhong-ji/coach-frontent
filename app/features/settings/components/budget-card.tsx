@@ -92,7 +92,7 @@ export default function BudgetTableCard({ title = "Budgets", budgets, categories
               Add & Edit Budget
             </Button>
           </DialogTrigger>
-          <AddBudgetDialog categories={categories ?? []} year={year} month={month} />
+          <AddBudgetDialog categories={categories ?? []} year={year} month={month} setOpen={setAddBudgetOpen} />
         </Dialog>
       </CardHeader>
 

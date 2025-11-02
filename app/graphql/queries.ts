@@ -94,6 +94,15 @@ export const UPDATE_ACCOUNT_MUTATION = gql`
     }
   }
 `;
+
+export const DELETE_ACCOUNT_MUTATION = gql`
+  mutation DeleteAccount($deleteAccountInput: DeleteAccountInput!) {
+    deleteAccount(DeleteAccountInput: $deleteAccountInput) {
+      ok
+      error
+    }
+  }
+`;
 // CATEGORIES
 
 export const CREATE_CATEGORY_MUTATION = gql`
