@@ -304,6 +304,21 @@ export type FindMonthlyExpenseTotalOutput = {
   ok: Scalars["Boolean"]["output"];
 };
 
+export type FindSummaryInput = {
+  /** 이번 월 */
+  thisMonth: Scalars["Int"]["input"];
+  /** 이번 연도 */
+  thisYear: Scalars["Int"]["input"];
+};
+
+export type FindSummaryOutput = {
+  __typename?: "FindSummaryOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+  /** 요약 정보 */
+  summary?: Maybe<SummaryDto>;
+};
+
 export type LoginInput = {
   /** 이메일 */
   email: Scalars["String"]["input"];
@@ -427,6 +442,7 @@ export type Query = {
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
   findExpenseMonthly: FindExpenseMonthlyOutput;
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
+  findSummary: FindSummaryOutput;
   me: MeOutput;
   test: Scalars["Boolean"]["output"];
 };
@@ -445,6 +461,20 @@ export type QueryFindExpenseMonthlyArgs = {
 
 export type QueryFindMonthlyExpenseTotalArgs = {
   FindMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
+};
+
+export type QueryFindSummaryArgs = {
+  FindSummaryInput: FindSummaryInput;
+};
+
+export type SummaryDto = {
+  __typename?: "SummaryDto";
+  /** 지난 달 지출 */
+  lastMonthExpense: Scalars["Float"]["output"];
+  /** 이번 달 지출 */
+  thisMonthExpense: Scalars["Float"]["output"];
+  /** 카테고리 목록 */
+  topCategory: Array<CategoryDto>;
 };
 
 export type UpdateAccountInput = {
@@ -856,8 +886,39 @@ export type FindBudgetsQuery = {
       id: number;
       yearMonth: string;
       totalAmount: number;
-      category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+      category?: {
+        __typename?: "CategoryDto";
+        id: number;
+        name: string;
+        sortOrder: number;
+        totalExpense?: number | null;
+      } | null;
     }> | null;
+  };
+};
+
+export type FindSummaryQueryVariables = Exact<{
+  findSummaryInput: FindSummaryInput;
+}>;
+
+export type FindSummaryQuery = {
+  __typename?: "Query";
+  findSummary: {
+    __typename?: "FindSummaryOutput";
+    ok: boolean;
+    error?: string | null;
+    summary?: {
+      __typename?: "SummaryDto";
+      lastMonthExpense: number;
+      thisMonthExpense: number;
+      topCategory: Array<{
+        __typename?: "CategoryDto";
+        id: number;
+        name: string;
+        sortOrder: number;
+        totalExpense?: number | null;
+      }>;
+    } | null;
   };
 };
 
@@ -1869,6 +1930,7 @@ export const FindBudgetsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "id" } },
                             { kind: "Field", name: { kind: "Name", value: "name" } },
                             { kind: "Field", name: { kind: "Name", value: "sortOrder" } },
+                            { kind: "Field", name: { kind: "Name", value: "totalExpense" } },
                           ],
                         },
                       },
@@ -1883,6 +1945,70 @@ export const FindBudgetsDocument = {
     },
   ],
 } as unknown as DocumentNode<FindBudgetsQuery, FindBudgetsQueryVariables>;
+export const FindSummaryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FindSummary" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "findSummaryInput" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "FindSummaryInput" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "findSummary" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "FindSummaryInput" },
+                value: { kind: "Variable", name: { kind: "Name", value: "findSummaryInput" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "ok" } },
+                { kind: "Field", name: { kind: "Name", value: "error" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "summary" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "lastMonthExpense" } },
+                      { kind: "Field", name: { kind: "Name", value: "thisMonthExpense" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "topCategory" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                            { kind: "Field", name: { kind: "Name", value: "sortOrder" } },
+                            { kind: "Field", name: { kind: "Name", value: "totalExpense" } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FindSummaryQuery, FindSummaryQueryVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -2179,6 +2305,21 @@ export type FindMonthlyExpenseTotalOutput = {
   ok: Scalars["Boolean"]["output"];
 };
 
+export type FindSummaryInput = {
+  /** 이번 월 */
+  thisMonth: Scalars["Int"]["input"];
+  /** 이번 연도 */
+  thisYear: Scalars["Int"]["input"];
+};
+
+export type FindSummaryOutput = {
+  __typename?: "FindSummaryOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+  /** 요약 정보 */
+  summary?: Maybe<SummaryDto>;
+};
+
 export type LoginInput = {
   /** 이메일 */
   email: Scalars["String"]["input"];
@@ -2302,6 +2443,7 @@ export type Query = {
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
   findExpenseMonthly: FindExpenseMonthlyOutput;
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
+  findSummary: FindSummaryOutput;
   me: MeOutput;
   test: Scalars["Boolean"]["output"];
 };
@@ -2320,6 +2462,20 @@ export type QueryFindExpenseMonthlyArgs = {
 
 export type QueryFindMonthlyExpenseTotalArgs = {
   FindMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
+};
+
+export type QueryFindSummaryArgs = {
+  FindSummaryInput: FindSummaryInput;
+};
+
+export type SummaryDto = {
+  __typename?: "SummaryDto";
+  /** 지난 달 지출 */
+  lastMonthExpense: Scalars["Float"]["output"];
+  /** 이번 달 지출 */
+  thisMonthExpense: Scalars["Float"]["output"];
+  /** 카테고리 목록 */
+  topCategory: Array<CategoryDto>;
 };
 
 export type UpdateAccountInput = {
@@ -2731,7 +2887,38 @@ export type FindBudgetsQuery = {
       id: number;
       yearMonth: string;
       totalAmount: number;
-      category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+      category?: {
+        __typename?: "CategoryDto";
+        id: number;
+        name: string;
+        sortOrder: number;
+        totalExpense?: number | null;
+      } | null;
     }> | null;
+  };
+};
+
+export type FindSummaryQueryVariables = Exact<{
+  findSummaryInput: FindSummaryInput;
+}>;
+
+export type FindSummaryQuery = {
+  __typename?: "Query";
+  findSummary: {
+    __typename?: "FindSummaryOutput";
+    ok: boolean;
+    error?: string | null;
+    summary?: {
+      __typename?: "SummaryDto";
+      lastMonthExpense: number;
+      thisMonthExpense: number;
+      topCategory: Array<{
+        __typename?: "CategoryDto";
+        id: number;
+        name: string;
+        sortOrder: number;
+        totalExpense?: number | null;
+      }>;
+    } | null;
   };
 };

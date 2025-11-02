@@ -299,3 +299,24 @@ export const FIND_BUDGETS_QUERY = gql`
     }
   }
 `;
+
+// DASHBOARD
+
+export const FIND_SUMMARY_QUERY = gql`
+  query FindSummary($findSummaryInput: FindSummaryInput!) {
+    findSummary(FindSummaryInput: $findSummaryInput) {
+      ok
+      error
+      summary {
+        lastMonthExpense
+        thisMonthExpense
+        topCategory {
+          id
+          name
+          sortOrder
+          totalExpense
+        }
+      }
+    }
+  }
+`;

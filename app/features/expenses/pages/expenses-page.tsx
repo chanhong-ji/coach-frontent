@@ -11,7 +11,7 @@ import {
   parseParamsOrThrow,
   isFutureMonth,
   fetchMonthlyExpenses,
-  fetchMonthlyTotal,
+  findMonthlyExpenseTotal,
   findCategories,
   findAccounts,
   parseSearchParamsOrThrow,
@@ -41,7 +41,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { client } = createClient(request);
 
   const [monthlyTotalResult, expensesResult, categoriesResult, accountsResult] = await Promise.all([
-    fetchMonthlyTotal(client, year, month),
+    findMonthlyExpenseTotal(client, year, [month]),
     fetchMonthlyExpenses(client, year, month, page),
     findCategories(client),
     findAccounts(client),

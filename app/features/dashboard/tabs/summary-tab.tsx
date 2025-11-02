@@ -5,38 +5,41 @@ import { Progress } from "~/common/components/ui/progress";
 import { Info, Sparkles } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { TabsContent } from "~/common/components/ui/tabs";
-
-// Fake data
-const monthLabel = "November 2023";
-const summary = {
-  total: 2150.75,
-  momDeltaPct: -5.3,
-};
-
-const topCategories = [
-  { name: "Groceries", pct: 30, amount: 650 },
-  { name: "Dining Out", pct: 22, amount: 480 },
-  { name: "Utilities", pct: 14, amount: 300 },
-  { name: "Transport", pct: 11, amount: 250 },
-];
-
-const spendingDaily = [
-  { day: "Mon", amount: 120 },
-  { day: "Tue", amount: 90 },
-  { day: "Wed", amount: 160 },
-  { day: "Thu", amount: 130 },
-  { day: "Fri", amount: 190 },
-  { day: "Sat", amount: 260 },
-  { day: "Sun", amount: 180 },
-];
+import type { MonthlyExpenseTotalDto, SummaryDto } from "~/graphql/__generated__/graphql";
+import { currency } from "~/features/settings/utils/util";
+import { DateTime } from "luxon";
 
 const aiInsight = `Your financial overview for November shows a positive trend with a 5.3% decrease in overall spending. Groceries and Dining Out remain your top expenses. Consider reviewing your Dining Out budget for potential savings. Your daily spending patterns indicate higher expenses on weekends. The system detected an unusual large transaction of $350 on November 20th in 'Electronics', which is above your typical spending. Recurring subscriptions include Netflix ($15.99) and Spotify ($10.99), both due next week.`;
 
-function currency(n: number) {
-  return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
-}
+const monthLabels = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
 
-export function SummaryTab() {
+export function SummaryTab({
+  summary,
+  monthlyExpenseTotal,
+}: {
+  summary: SummaryDto;
+  monthlyExpenseTotal: MonthlyExpenseTotalDto[];
+}) {
+  const spendingMonthly = monthlyExpenseTotal.map((m) => ({
+    month: monthLabels[m.month as keyof typeof monthLabels],
+    amount: m.totalExpense,
+  }));
+
+  const today = DateTime.now();
+
   return (
     <TabsContent value="summary" className="space-y-6 mt-4">
       <div className="grid gap-6 md:grid-cols-2">
@@ -47,16 +50,25 @@ export function SummaryTab() {
               <CardTitle>Monthly Summary</CardTitle>
             </div>
             <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs">
-              {monthLabel}
+              {monthLabels[today.month]} {today.year}
             </Badge>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <div className="text-4xl font-semibold">{currency(summary.total)}</div>
+              <div className="text-4xl font-semibold">{currency(summary?.thisMonthExpense ?? 0)}</div>
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="text-red-600">
-                  ↓ {Math.abs(summary.momDeltaPct).toFixed(2)}% decrease from last month
-                </span>
+                {summary?.lastMonthExpense && (
+                  <span className="text-red-600">
+                    {summary.thisMonthExpense > summary.lastMonthExpense ? "↑" : "↓"}
+                    {(summary.lastMonthExpense
+                      ? Math.abs(
+                          ((summary.thisMonthExpense - summary.lastMonthExpense) / summary.lastMonthExpense) * 100,
+                        )
+                      : 0
+                    ).toFixed(2)}
+                    %{summary.thisMonthExpense > summary.lastMonthExpense ? " increase" : " decrease"} from last month
+                  </span>
+                )}
               </div>
             </div>
 
@@ -65,18 +77,21 @@ export function SummaryTab() {
             <div className="space-y-4">
               <div className="text-sm font-medium">Top Categories</div>
               <div className="space-y-4">
-                {topCategories.map((c) => (
+                {summary?.topCategory.map((c) => (
                   <div key={c.name} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <span>{c.name}</span>
                         <Badge variant="secondary" className="rounded-full px-2 text-[10px]">
-                          {c.pct}%
+                          {c.totalExpense ? ((c.totalExpense / summary.thisMonthExpense) * 100).toFixed(2) : "0.00"}%
                         </Badge>
                       </div>
-                      <span className="tabular-nums">{currency(c.amount)}</span>
+                      <span className="tabular-nums">{currency(c.totalExpense ?? 0)}</span>
                     </div>
-                    <Progress value={c.pct} className="h-2" />
+                    <Progress
+                      value={c.totalExpense ? (c.totalExpense / summary.thisMonthExpense) * 100 : 0}
+                      className="h-2"
+                    />
                   </div>
                 ))}
               </div>
@@ -99,20 +114,20 @@ export function SummaryTab() {
         </Card>
       </div>
 
-      {/* Daily Spending Patterns */}
+      {/* Monthly Spending Patterns */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
             <Info className="h-4 w-4" />
-            <CardTitle>Daily Spending Patterns</CardTitle>
+            <CardTitle>Monthly Spending Patterns</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={spendingDaily} margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
+            <LineChart data={spendingMonthly} margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" tickLine={false} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+              <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={12} />
+              <YAxis tickLine={false} axisLine={false} tickFormatter={(v) => currency(Number(v))} fontSize={10} />
               <Tooltip
                 formatter={(v: any) => currency(Number(v))}
                 labelClassName="text-xs"

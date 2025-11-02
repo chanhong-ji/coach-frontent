@@ -22,6 +22,9 @@ import type {
   FindExpensesQueryVariables,
   FindMonthlyExpenseTotalQuery,
   FindMonthlyExpenseTotalQueryVariables,
+  FindSummaryInput,
+  FindSummaryQuery,
+  FindSummaryQueryVariables,
   UpdateExpenseInput,
   UpdateExpenseMutation,
   UpdateExpenseMutationVariables,
@@ -38,6 +41,7 @@ import {
   FIND_CATEGORIES_QUERY,
   FIND_EXPENSES_QUERY,
   FIND_MONTHLY_EXPENSE_TOTAL_QUERY,
+  FIND_SUMMARY_QUERY,
   UPDATE_EXPENSE_MUTATION,
   UPSERT_BUDGET_MUTATION,
 } from "~/graphql/queries";
@@ -72,13 +76,13 @@ export function isFutureMonth(year: number, month: number): boolean {
   return year > now.year || (year === now.year && month > now.month);
 }
 
-export async function fetchMonthlyTotal(client: GraphQLClient, year: number, month: number) {
+export async function findMonthlyExpenseTotal(client: GraphQLClient, year: number, months: number[]) {
   return client.request<FindMonthlyExpenseTotalQuery, FindMonthlyExpenseTotalQueryVariables>(
     FIND_MONTHLY_EXPENSE_TOTAL_QUERY,
     {
       findMonthlyExpenseTotalInput: {
         year,
-        months: [month],
+        months,
       },
     },
   );
@@ -136,5 +140,11 @@ export async function upsertBudget(client: GraphQLClient, input: UpsertBudgetInp
 export async function deleteBudget(client: GraphQLClient, input: DeleteBudgetInput) {
   return client.request<DeleteBudgetMutation, DeleteBudgetMutationVariables>(DELETE_BUDGET_MUTATION, {
     deleteBudgetInput: input,
+  });
+}
+
+export async function findSummary(client: GraphQLClient, input: FindSummaryInput) {
+  return client.request<FindSummaryQuery, FindSummaryQueryVariables>(FIND_SUMMARY_QUERY, {
+    findSummaryInput: input,
   });
 }

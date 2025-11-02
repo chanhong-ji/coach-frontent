@@ -1,20 +1,65 @@
+import type { Route } from "./+types/dashboard-page";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/common/components/ui/tabs";
 import { SummaryTab } from "../tabs/summary-tab";
+import { createClient } from "~/client";
+import { findMonthlyExpenseTotal, findSummary } from "~/features/expenses/lib/loader-helpers";
+import { DateTime } from "luxon";
 
-export default function DashboardPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const today = DateTime.now();
+  const months = Array.from({ length: today.month }, (_, i) => today.month - i);
+  const { client } = createClient(request);
+  const [
+    {
+      findSummary: { summary },
+    },
+    {
+      findMonthlyExpenseTotal: { months: monthlyExpenseTotal },
+    },
+  ] = await Promise.all([
+    findSummary(client, {
+      thisYear: today.year,
+      thisMonth: today.month,
+    }),
+    findMonthlyExpenseTotal(client, today.year, months),
+  ]);
+
+  return { summary, monthlyExpenseTotal };
+};
+
+export default function DashboardPage({ loaderData }: Route.ComponentProps) {
+  const { summary, monthlyExpenseTotal } = loaderData;
   return (
     <div className="mx-auto w-full max-w-6xl p-4 md:p-6 space-y-6">
       <Tabs defaultValue="summary" className="">
         <div className="">
           <TabsList className="grid grid-cols-3">
-            <TabsTrigger value="summary">Summary & Insights</TabsTrigger>
-            <TabsTrigger value="budget">Budget & Alerts</TabsTrigger>
-            <TabsTrigger value="coach">AI Coach & Recurring</TabsTrigger>
+            <TabsTrigger
+              value="summary"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer"
+            >
+              Summary & Insights
+            </TabsTrigger>
+            <TabsTrigger
+              value="budget"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer"
+            >
+              Budget & Alerts
+            </TabsTrigger>
+            <TabsTrigger
+              value="coach"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer"
+            >
+              AI Coach & Recurring
+            </TabsTrigger>
           </TabsList>
         </div>
 
-        <SummaryTab />
+        <SummaryTab
+          summary={summary ?? { lastMonthExpense: 0, thisMonthExpense: 0, topCategory: [] }}
+          monthlyExpenseTotal={monthlyExpenseTotal ?? []}
+        />
         <TabsContent value="budget">
           <Card>
             <CardHeader>
