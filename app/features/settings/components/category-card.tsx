@@ -18,16 +18,13 @@ import AddCategoryDialog from "./add-category-dialog";
 import { useEffect, useState } from "react";
 import type { CategoryDto } from "~/graphql/__generated__/graphql";
 import { useFetcher } from "react-router";
+import { currency } from "../utils/util";
 
 type Props = {
   title?: string;
   categories?: CategoryDto[];
   className?: string;
 };
-
-function pluralize(n: number, unit: string) {
-  return `${n} ${unit}${n === 1 ? "" : "s"}`;
-}
 
 export default function CategoryCard({ title = "Categories", categories, className }: Props) {
   const fetcher = useFetcher();
@@ -104,7 +101,7 @@ export default function CategoryCard({ title = "Categories", categories, classNa
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-muted-foreground">{pluralize(100, "transaction")}</TableCell>
+                    <TableCell className="tabular-nums">{currency(category.totalExpense ?? 0)}</TableCell>
 
                     <TableCell className="text-right">
                       <div className="inline-flex items-center gap-2">

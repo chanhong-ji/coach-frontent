@@ -12,20 +12,21 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const thisMonth = today.month;
 
   const { client } = createClient(request);
-  const {
-    findCategories: { categories },
-  } = await findCategories(client);
-
-  const {
-    findBudgets: { budgets },
-  } = await findBudgets(client, {
-    year: thisYear,
-    months: [thisMonth],
-  });
-
-  const {
-    findAccounts: { accounts },
-  } = await findAccounts(client);
+  const [
+    {
+      findCategories: { categories },
+    },
+    {
+      findBudgets: { budgets },
+    },
+    {
+      findAccounts: { accounts },
+    },
+  ] = await Promise.all([
+    findCategories(client),
+    findBudgets(client, { year: thisYear, month: thisMonth }),
+    findAccounts(client),
+  ]);
 
   return { categories, budgets, year: thisYear, month: thisMonth, accounts };
 };
@@ -33,7 +34,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export default function SettingsPage({ loaderData }: Route.ComponentProps) {
   const { categories, budgets, year, month, accounts } = loaderData;
   return (
-    <div className="px-30 pt-10 flex flex-col items-center justify-center space-y-10">
+    <div className="pt-10 flex flex-col items-center justify-center space-y-10 w-1/2 min-w-lg mx-auto">
       <h1 className="text-2xl font-semibold">Settings</h1>
       <CategoryCard className="w-full" categories={categories ?? []} />
       <BudgetCard className="w-full" budgets={budgets ?? []} categories={categories ?? []} year={year} month={month} />

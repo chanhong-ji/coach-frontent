@@ -20,7 +20,7 @@ export type Scalars = {
 };
 
 export type AccountDto = {
-  __typename: "AccountDto";
+  __typename?: "AccountDto";
   /** 결제 수단 생성 일시 */
   createdAt: Scalars["DateTime"]["output"];
   /** 결제 수단 ID */
@@ -43,29 +43,33 @@ export enum AccountType {
 }
 
 export type BudgetDto = {
-  __typename: "BudgetDto";
+  __typename?: "BudgetDto";
   /** 카테고리 */
-  category: Maybe<CategoryDto>;
+  category?: Maybe<CategoryDto>;
   /** 예산 ID */
   id: Scalars["Int"]["output"];
   /** 예산 금액 */
   totalAmount: Scalars["Float"]["output"];
+  /** 이번달 지출 총액 */
+  totalExpense?: Maybe<Scalars["Float"]["output"]>;
   /** 년월 */
   yearMonth: Scalars["String"]["output"];
 };
 
 export type CategoryDto = {
-  __typename: "CategoryDto";
+  __typename?: "CategoryDto";
   /** 카테고리 ID */
   id: Scalars["Int"]["output"];
   /** 카테고리 이름 */
   name: Scalars["String"]["output"];
   /** 정렬 순서 */
   sortOrder: Scalars["Int"]["output"];
+  /** 이번달 지출 총액 */
+  totalExpense?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type CategoryExpense = {
-  __typename: "CategoryExpense";
+  __typename?: "CategoryExpense";
   /** 카테고리 ID */
   categoryId: Scalars["Int"]["output"];
   /** 총 지출 */
@@ -80,9 +84,9 @@ export type CreateAccountInput = {
 };
 
 export type CreateAccountOutput = {
-  __typename: "CreateAccountOutput";
-  account: Maybe<AccountDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "CreateAccountOutput";
+  account?: Maybe<AccountDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -92,10 +96,10 @@ export type CreateCategoryInput = {
 };
 
 export type CreateCategoryOutput = {
-  __typename: "CreateCategoryOutput";
+  __typename?: "CreateCategoryOutput";
   /** 생성된 카테고리 */
-  category: Maybe<CategoryDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  category?: Maybe<CategoryDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -119,11 +123,11 @@ export type CreateExpenseInput = {
 };
 
 export type CreateExpenseOutput = {
-  __typename: "CreateExpenseOutput";
+  __typename?: "CreateExpenseOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 지출 내역 */
-  expense: Maybe<ExpenseDto>;
+  expense?: Maybe<ExpenseDto>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -138,11 +142,11 @@ export type CreateUserInput = {
 };
 
 export type CreateUserOutput = {
-  __typename: "CreateUserOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "CreateUserOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 생성된 유저 아이디 */
-  userId: Maybe<Scalars["Int"]["output"]>;
+  userId?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type DeleteAccountInput = {
@@ -151,8 +155,8 @@ export type DeleteAccountInput = {
 };
 
 export type DeleteAccountOutput = {
-  __typename: "DeleteAccountOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteAccountOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -162,9 +166,9 @@ export type DeleteBudgetInput = {
 };
 
 export type DeleteBudgetOutput = {
-  __typename: "DeleteBudgetOutput";
+  __typename?: "DeleteBudgetOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -175,8 +179,8 @@ export type DeleteCategoryInput = {
 };
 
 export type DeleteCategoryOutput = {
-  __typename: "DeleteCategoryOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteCategoryOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -186,27 +190,27 @@ export type DeleteExpenseInput = {
 };
 
 export type DeleteExpenseOutput = {
-  __typename: "DeleteExpenseOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteExpenseOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
 export type ExpenseDto = {
-  __typename: "ExpenseDto";
+  __typename?: "ExpenseDto";
   /** 계좌 ID */
-  accountId: Maybe<Scalars["Int"]["output"]>;
+  accountId?: Maybe<Scalars["Int"]["output"]>;
   /** 지출 금액 */
   amount: Scalars["Float"]["output"];
   /** 카테고리 ID */
-  categoryId: Maybe<Scalars["Int"]["output"]>;
+  categoryId?: Maybe<Scalars["Int"]["output"]>;
   /** 지출 ID */
   id: Scalars["Int"]["output"];
   /** 메모 */
-  memo: Maybe<Scalars["String"]["output"]>;
+  memo?: Maybe<Scalars["String"]["output"]>;
   /** 상점 ID */
-  merchantId: Maybe<Scalars["Int"]["output"]>;
+  merchantId?: Maybe<Scalars["Int"]["output"]>;
   /** 상점 이름 */
-  merchantText: Maybe<Scalars["String"]["output"]>;
+  merchantText?: Maybe<Scalars["String"]["output"]>;
   /** 지출 이름 */
   name: Scalars["String"]["output"];
   /** 지출 날짜 */
@@ -214,35 +218,35 @@ export type ExpenseDto = {
 };
 
 export type FindAccountsOutput = {
-  __typename: "FindAccountsOutput";
+  __typename?: "FindAccountsOutput";
   /** 결제 수단 목록 */
-  accounts: Maybe<Array<AccountDto>>;
-  error: Maybe<Scalars["String"]["output"]>;
+  accounts?: Maybe<Array<AccountDto>>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
 export type FindBudgetInput = {
   /** 월 */
-  months: Array<Scalars["Int"]["input"]>;
+  month: Scalars["Int"]["input"];
   /** 연도 */
   year: Scalars["Int"]["input"];
 };
 
 export type FindBudgetOutput = {
-  __typename: "FindBudgetOutput";
+  __typename?: "FindBudgetOutput";
   /** 예산 목록 */
-  budgets: Maybe<Array<BudgetDto>>;
+  budgets?: Maybe<Array<BudgetDto>>;
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
 export type FindCategoriesOutput = {
-  __typename: "FindCategoriesOutput";
+  __typename?: "FindCategoriesOutput";
   /** 카테고리 목록 */
-  categories: Maybe<Array<CategoryDto>>;
-  error: Maybe<Scalars["String"]["output"]>;
+  categories?: Maybe<Array<CategoryDto>>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -254,10 +258,10 @@ export type FindCategoryMonthlyExpenseInput = {
 };
 
 export type FindCategoryMonthlyExpenseOutput = {
-  __typename: "FindCategoryMonthlyExpenseOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindCategoryMonthlyExpenseOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
-  result: Maybe<Array<CategoryExpense>>;
+  result?: Maybe<Array<CategoryExpense>>;
 };
 
 export type FindExpenseMonthlyInput = {
@@ -276,13 +280,13 @@ export type FindExpenseMonthlyInput = {
 };
 
 export type FindExpenseMonthlyOutput = {
-  __typename: "FindExpenseMonthlyOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindExpenseMonthlyOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 지출 목록 */
-  expenses: Maybe<Array<ExpenseDto>>;
+  expenses?: Maybe<Array<ExpenseDto>>;
   ok: Scalars["Boolean"]["output"];
   /** 총 건수 */
-  totalCount: Maybe<Scalars["Int"]["output"]>;
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type FindMonthlyExpenseTotalInput = {
@@ -293,10 +297,10 @@ export type FindMonthlyExpenseTotalInput = {
 };
 
 export type FindMonthlyExpenseTotalOutput = {
-  __typename: "FindMonthlyExpenseTotalOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindMonthlyExpenseTotalOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 월별 지출 합계 목록 */
-  months: Maybe<Array<MonthlyExpenseTotalDto>>;
+  months?: Maybe<Array<MonthlyExpenseTotalDto>>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -308,17 +312,17 @@ export type LoginInput = {
 };
 
 export type LoginOutput = {
-  __typename: "LoginOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "LoginOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 토큰 */
-  token: Maybe<Scalars["String"]["output"]>;
+  token?: Maybe<Scalars["String"]["output"]>;
   /** 사용자 ID */
-  userId: Maybe<Scalars["Int"]["output"]>;
+  userId?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type MeDto = {
-  __typename: "MeDto";
+  __typename?: "MeDto";
   /** 이메일 */
   email: Scalars["String"]["output"];
   /** 사용자 ID */
@@ -328,15 +332,15 @@ export type MeDto = {
 };
 
 export type MeOutput = {
-  __typename: "MeOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "MeOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 사용자 정보 */
-  user: Maybe<MeDto>;
+  user?: Maybe<MeDto>;
 };
 
 export type MonthlyExpenseTotalDto = {
-  __typename: "MonthlyExpenseTotalDto";
+  __typename?: "MonthlyExpenseTotalDto";
   /** 월 */
   month: Scalars["Int"]["output"];
   /** 총 건수 */
@@ -346,7 +350,7 @@ export type MonthlyExpenseTotalDto = {
 };
 
 export type Mutation = {
-  __typename: "Mutation";
+  __typename?: "Mutation";
   createAccount: CreateAccountOutput;
   createCategory: CreateCategoryOutput;
   createExpense: CreateExpenseOutput;
@@ -416,7 +420,7 @@ export type MutationUpsertBudgetArgs = {
 };
 
 export type Query = {
-  __typename: "Query";
+  __typename?: "Query";
   findAccounts: FindAccountsOutput;
   findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
@@ -455,9 +459,9 @@ export type UpdateAccountInput = {
 };
 
 export type UpdateAccountOutput = {
-  __typename: "UpdateAccountOutput";
-  account: Maybe<AccountDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "UpdateAccountOutput";
+  account?: Maybe<AccountDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -469,10 +473,10 @@ export type UpdateCategoryInput = {
 };
 
 export type UpdateCategoryOutput = {
-  __typename: "UpdateCategoryOutput";
+  __typename?: "UpdateCategoryOutput";
   /** 수정된 카테고리 */
-  category: Maybe<CategoryDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  category?: Maybe<CategoryDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -498,11 +502,11 @@ export type UpdateExpenseInput = {
 };
 
 export type UpdateExpenseOutput = {
-  __typename: "UpdateExpenseOutput";
+  __typename?: "UpdateExpenseOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 수정된 지출 */
-  expense: Maybe<ExpenseDto>;
+  expense?: Maybe<ExpenseDto>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -519,11 +523,11 @@ export type UpsertBudgetInput = {
 };
 
 export type UpsertBudgetOutput = {
-  __typename: "UpsertBudgetOutput";
+  __typename?: "UpsertBudgetOutput";
   /** 예산 */
-  budget: Maybe<BudgetDto>;
+  budget?: Maybe<BudgetDto>;
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -533,7 +537,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 export type LoginMutation = {
-  login: { __typename: "LoginOutput"; ok: boolean; error: string | null; token: string | null; userId: number | null };
+  __typename?: "Mutation";
+  login: {
+    __typename?: "LoginOutput";
+    ok: boolean;
+    error?: string | null;
+    token?: string | null;
+    userId?: number | null;
+  };
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -541,33 +552,36 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 export type CreateUserMutation = {
-  createUser: { __typename: "CreateUserOutput"; ok: boolean; error: string | null; userId: number | null };
+  __typename?: "Mutation";
+  createUser: { __typename?: "CreateUserOutput"; ok: boolean; error?: string | null; userId?: number | null };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
+  __typename?: "Query";
   me: {
-    __typename: "MeOutput";
+    __typename?: "MeOutput";
     ok: boolean;
-    error: string | null;
-    user: { __typename: "MeDto"; id: number; email: string; name: string } | null;
+    error?: string | null;
+    user?: { __typename?: "MeDto"; id: number; email: string; name: string } | null;
   };
 };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type LogoutMutation = { logout: boolean };
+export type LogoutMutation = { __typename?: "Mutation"; logout: boolean };
 
 export type FindAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FindAccountsQuery = {
+  __typename?: "Query";
   findAccounts: {
-    __typename: "FindAccountsOutput";
+    __typename?: "FindAccountsOutput";
     ok: boolean;
-    error: string | null;
-    accounts: Array<{
-      __typename: "AccountDto";
+    error?: string | null;
+    accounts?: Array<{
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -583,12 +597,13 @@ export type CreateAccountMutationVariables = Exact<{
 }>;
 
 export type CreateAccountMutation = {
+  __typename?: "Mutation";
   createAccount: {
-    __typename: "CreateAccountOutput";
+    __typename?: "CreateAccountOutput";
     ok: boolean;
-    error: string | null;
-    account: {
-      __typename: "AccountDto";
+    error?: string | null;
+    account?: {
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -604,12 +619,13 @@ export type UpdateAccountMutationVariables = Exact<{
 }>;
 
 export type UpdateAccountMutation = {
+  __typename?: "Mutation";
   updateAccount: {
-    __typename: "UpdateAccountOutput";
+    __typename?: "UpdateAccountOutput";
     ok: boolean;
-    error: string | null;
-    account: {
-      __typename: "AccountDto";
+    error?: string | null;
+    account?: {
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -625,7 +641,8 @@ export type DeleteAccountMutationVariables = Exact<{
 }>;
 
 export type DeleteAccountMutation = {
-  deleteAccount: { __typename: "DeleteAccountOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteAccount: { __typename?: "DeleteAccountOutput"; ok: boolean; error?: string | null };
 };
 
 export type CreateCategoryMutationVariables = Exact<{
@@ -633,22 +650,30 @@ export type CreateCategoryMutationVariables = Exact<{
 }>;
 
 export type CreateCategoryMutation = {
+  __typename?: "Mutation";
   createCategory: {
-    __typename: "CreateCategoryOutput";
+    __typename?: "CreateCategoryOutput";
     ok: boolean;
-    error: string | null;
-    category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+    error?: string | null;
+    category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
   };
 };
 
 export type FindCategoriesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FindCategoriesQuery = {
+  __typename?: "Query";
   findCategories: {
-    __typename: "FindCategoriesOutput";
+    __typename?: "FindCategoriesOutput";
     ok: boolean;
-    error: string | null;
-    categories: Array<{ __typename: "CategoryDto"; id: number; name: string; sortOrder: number }> | null;
+    error?: string | null;
+    categories?: Array<{
+      __typename?: "CategoryDto";
+      id: number;
+      name: string;
+      sortOrder: number;
+      totalExpense?: number | null;
+    }> | null;
   };
 };
 
@@ -657,11 +682,12 @@ export type UpdateCategoryMutationVariables = Exact<{
 }>;
 
 export type UpdateCategoryMutation = {
+  __typename?: "Mutation";
   updateCategory: {
-    __typename: "UpdateCategoryOutput";
+    __typename?: "UpdateCategoryOutput";
     ok: boolean;
-    error: string | null;
-    category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+    error?: string | null;
+    category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
   };
 };
 
@@ -670,7 +696,8 @@ export type DeleteCategoryMutationVariables = Exact<{
 }>;
 
 export type DeleteCategoryMutation = {
-  deleteCategory: { __typename: "DeleteCategoryOutput"; error: string | null; ok: boolean };
+  __typename?: "Mutation";
+  deleteCategory: { __typename?: "DeleteCategoryOutput"; error?: string | null; ok: boolean };
 };
 
 export type CreateExpenseMutationVariables = Exact<{
@@ -678,21 +705,22 @@ export type CreateExpenseMutationVariables = Exact<{
 }>;
 
 export type CreateExpenseMutation = {
+  __typename?: "Mutation";
   createExpense: {
-    __typename: "CreateExpenseOutput";
+    __typename?: "CreateExpenseOutput";
     ok: boolean;
-    error: string | null;
-    expense: {
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expense?: {
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     } | null;
   };
 };
@@ -702,21 +730,22 @@ export type UpdateExpenseMutationVariables = Exact<{
 }>;
 
 export type UpdateExpenseMutation = {
+  __typename?: "Mutation";
   updateExpense: {
-    __typename: "UpdateExpenseOutput";
+    __typename?: "UpdateExpenseOutput";
     ok: boolean;
-    error: string | null;
-    expense: {
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expense?: {
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     } | null;
   };
 };
@@ -726,7 +755,8 @@ export type DeleteExpenseMutationVariables = Exact<{
 }>;
 
 export type DeleteExpenseMutation = {
-  deleteExpense: { __typename: "DeleteExpenseOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteExpense: { __typename?: "DeleteExpenseOutput"; ok: boolean; error?: string | null };
 };
 
 export type FindExpensesWithCategoriesQueryVariables = Exact<{
@@ -734,11 +764,12 @@ export type FindExpensesWithCategoriesQueryVariables = Exact<{
 }>;
 
 export type FindExpensesWithCategoriesQuery = {
+  __typename?: "Query";
   findCategoryMonthlyExpense: {
-    __typename: "FindCategoryMonthlyExpenseOutput";
+    __typename?: "FindCategoryMonthlyExpenseOutput";
     ok: boolean;
-    error: string | null;
-    result: Array<{ __typename: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
+    error?: string | null;
+    result?: Array<{ __typename?: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
   };
 };
 
@@ -747,12 +778,13 @@ export type FindMonthlyExpenseTotalQueryVariables = Exact<{
 }>;
 
 export type FindMonthlyExpenseTotalQuery = {
+  __typename?: "Query";
   findMonthlyExpenseTotal: {
-    __typename: "FindMonthlyExpenseTotalOutput";
+    __typename?: "FindMonthlyExpenseTotalOutput";
     ok: boolean;
-    error: string | null;
-    months: Array<{
-      __typename: "MonthlyExpenseTotalDto";
+    error?: string | null;
+    months?: Array<{
+      __typename?: "MonthlyExpenseTotalDto";
       month: number;
       totalExpense: number;
       totalCount: number;
@@ -765,22 +797,23 @@ export type FindExpensesQueryVariables = Exact<{
 }>;
 
 export type FindExpensesQuery = {
+  __typename?: "Query";
   findExpenseMonthly: {
-    __typename: "FindExpenseMonthlyOutput";
-    totalCount: number | null;
+    __typename?: "FindExpenseMonthlyOutput";
+    totalCount?: number | null;
     ok: boolean;
-    error: string | null;
-    expenses: Array<{
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expenses?: Array<{
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     }> | null;
   };
 };
@@ -790,11 +823,12 @@ export type UpsertBudgetMutationVariables = Exact<{
 }>;
 
 export type UpsertBudgetMutation = {
+  __typename?: "Mutation";
   upsertBudget: {
-    __typename: "UpsertBudgetOutput";
+    __typename?: "UpsertBudgetOutput";
     ok: boolean;
-    error: string | null;
-    budget: { __typename: "BudgetDto"; id: number; yearMonth: string; totalAmount: number } | null;
+    error?: string | null;
+    budget?: { __typename?: "BudgetDto"; id: number; yearMonth: string; totalAmount: number } | null;
   };
 };
 
@@ -803,7 +837,8 @@ export type DeleteBudgetMutationVariables = Exact<{
 }>;
 
 export type DeleteBudgetMutation = {
-  deleteBudget: { __typename: "DeleteBudgetOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteBudget: { __typename?: "DeleteBudgetOutput"; ok: boolean; error?: string | null };
 };
 
 export type FindBudgetsQueryVariables = Exact<{
@@ -811,16 +846,17 @@ export type FindBudgetsQueryVariables = Exact<{
 }>;
 
 export type FindBudgetsQuery = {
+  __typename?: "Query";
   findBudgets: {
-    __typename: "FindBudgetOutput";
+    __typename?: "FindBudgetOutput";
     ok: boolean;
-    error: string | null;
-    budgets: Array<{
-      __typename: "BudgetDto";
+    error?: string | null;
+    budgets?: Array<{
+      __typename?: "BudgetDto";
       id: number;
       yearMonth: string;
       totalAmount: number;
-      category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+      category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
     }> | null;
   };
 };
@@ -1239,6 +1275,7 @@ export const FindCategoriesDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
                       { kind: "Field", name: { kind: "Name", value: "sortOrder" } },
+                      { kind: "Field", name: { kind: "Name", value: "totalExpense" } },
                     ],
                   },
                 },
@@ -1858,7 +1895,7 @@ export type Scalars = {
 };
 
 export type AccountDto = {
-  __typename: "AccountDto";
+  __typename?: "AccountDto";
   /** 결제 수단 생성 일시 */
   createdAt: Scalars["DateTime"]["output"];
   /** 결제 수단 ID */
@@ -1881,29 +1918,33 @@ export enum AccountType {
 }
 
 export type BudgetDto = {
-  __typename: "BudgetDto";
+  __typename?: "BudgetDto";
   /** 카테고리 */
-  category: Maybe<CategoryDto>;
+  category?: Maybe<CategoryDto>;
   /** 예산 ID */
   id: Scalars["Int"]["output"];
   /** 예산 금액 */
   totalAmount: Scalars["Float"]["output"];
+  /** 이번달 지출 총액 */
+  totalExpense?: Maybe<Scalars["Float"]["output"]>;
   /** 년월 */
   yearMonth: Scalars["String"]["output"];
 };
 
 export type CategoryDto = {
-  __typename: "CategoryDto";
+  __typename?: "CategoryDto";
   /** 카테고리 ID */
   id: Scalars["Int"]["output"];
   /** 카테고리 이름 */
   name: Scalars["String"]["output"];
   /** 정렬 순서 */
   sortOrder: Scalars["Int"]["output"];
+  /** 이번달 지출 총액 */
+  totalExpense?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type CategoryExpense = {
-  __typename: "CategoryExpense";
+  __typename?: "CategoryExpense";
   /** 카테고리 ID */
   categoryId: Scalars["Int"]["output"];
   /** 총 지출 */
@@ -1918,9 +1959,9 @@ export type CreateAccountInput = {
 };
 
 export type CreateAccountOutput = {
-  __typename: "CreateAccountOutput";
-  account: Maybe<AccountDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "CreateAccountOutput";
+  account?: Maybe<AccountDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -1930,10 +1971,10 @@ export type CreateCategoryInput = {
 };
 
 export type CreateCategoryOutput = {
-  __typename: "CreateCategoryOutput";
+  __typename?: "CreateCategoryOutput";
   /** 생성된 카테고리 */
-  category: Maybe<CategoryDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  category?: Maybe<CategoryDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -1957,11 +1998,11 @@ export type CreateExpenseInput = {
 };
 
 export type CreateExpenseOutput = {
-  __typename: "CreateExpenseOutput";
+  __typename?: "CreateExpenseOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 지출 내역 */
-  expense: Maybe<ExpenseDto>;
+  expense?: Maybe<ExpenseDto>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -1976,11 +2017,11 @@ export type CreateUserInput = {
 };
 
 export type CreateUserOutput = {
-  __typename: "CreateUserOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "CreateUserOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 생성된 유저 아이디 */
-  userId: Maybe<Scalars["Int"]["output"]>;
+  userId?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type DeleteAccountInput = {
@@ -1989,8 +2030,8 @@ export type DeleteAccountInput = {
 };
 
 export type DeleteAccountOutput = {
-  __typename: "DeleteAccountOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteAccountOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2000,9 +2041,9 @@ export type DeleteBudgetInput = {
 };
 
 export type DeleteBudgetOutput = {
-  __typename: "DeleteBudgetOutput";
+  __typename?: "DeleteBudgetOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -2013,8 +2054,8 @@ export type DeleteCategoryInput = {
 };
 
 export type DeleteCategoryOutput = {
-  __typename: "DeleteCategoryOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteCategoryOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2024,27 +2065,27 @@ export type DeleteExpenseInput = {
 };
 
 export type DeleteExpenseOutput = {
-  __typename: "DeleteExpenseOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "DeleteExpenseOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
 export type ExpenseDto = {
-  __typename: "ExpenseDto";
+  __typename?: "ExpenseDto";
   /** 계좌 ID */
-  accountId: Maybe<Scalars["Int"]["output"]>;
+  accountId?: Maybe<Scalars["Int"]["output"]>;
   /** 지출 금액 */
   amount: Scalars["Float"]["output"];
   /** 카테고리 ID */
-  categoryId: Maybe<Scalars["Int"]["output"]>;
+  categoryId?: Maybe<Scalars["Int"]["output"]>;
   /** 지출 ID */
   id: Scalars["Int"]["output"];
   /** 메모 */
-  memo: Maybe<Scalars["String"]["output"]>;
+  memo?: Maybe<Scalars["String"]["output"]>;
   /** 상점 ID */
-  merchantId: Maybe<Scalars["Int"]["output"]>;
+  merchantId?: Maybe<Scalars["Int"]["output"]>;
   /** 상점 이름 */
-  merchantText: Maybe<Scalars["String"]["output"]>;
+  merchantText?: Maybe<Scalars["String"]["output"]>;
   /** 지출 이름 */
   name: Scalars["String"]["output"];
   /** 지출 날짜 */
@@ -2052,35 +2093,35 @@ export type ExpenseDto = {
 };
 
 export type FindAccountsOutput = {
-  __typename: "FindAccountsOutput";
+  __typename?: "FindAccountsOutput";
   /** 결제 수단 목록 */
-  accounts: Maybe<Array<AccountDto>>;
-  error: Maybe<Scalars["String"]["output"]>;
+  accounts?: Maybe<Array<AccountDto>>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
 export type FindBudgetInput = {
   /** 월 */
-  months: Array<Scalars["Int"]["input"]>;
+  month: Scalars["Int"]["input"];
   /** 연도 */
   year: Scalars["Int"]["input"];
 };
 
 export type FindBudgetOutput = {
-  __typename: "FindBudgetOutput";
+  __typename?: "FindBudgetOutput";
   /** 예산 목록 */
-  budgets: Maybe<Array<BudgetDto>>;
+  budgets?: Maybe<Array<BudgetDto>>;
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
 export type FindCategoriesOutput = {
-  __typename: "FindCategoriesOutput";
+  __typename?: "FindCategoriesOutput";
   /** 카테고리 목록 */
-  categories: Maybe<Array<CategoryDto>>;
-  error: Maybe<Scalars["String"]["output"]>;
+  categories?: Maybe<Array<CategoryDto>>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2092,10 +2133,10 @@ export type FindCategoryMonthlyExpenseInput = {
 };
 
 export type FindCategoryMonthlyExpenseOutput = {
-  __typename: "FindCategoryMonthlyExpenseOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindCategoryMonthlyExpenseOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
-  result: Maybe<Array<CategoryExpense>>;
+  result?: Maybe<Array<CategoryExpense>>;
 };
 
 export type FindExpenseMonthlyInput = {
@@ -2114,13 +2155,13 @@ export type FindExpenseMonthlyInput = {
 };
 
 export type FindExpenseMonthlyOutput = {
-  __typename: "FindExpenseMonthlyOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindExpenseMonthlyOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 지출 목록 */
-  expenses: Maybe<Array<ExpenseDto>>;
+  expenses?: Maybe<Array<ExpenseDto>>;
   ok: Scalars["Boolean"]["output"];
   /** 총 건수 */
-  totalCount: Maybe<Scalars["Int"]["output"]>;
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type FindMonthlyExpenseTotalInput = {
@@ -2131,10 +2172,10 @@ export type FindMonthlyExpenseTotalInput = {
 };
 
 export type FindMonthlyExpenseTotalOutput = {
-  __typename: "FindMonthlyExpenseTotalOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "FindMonthlyExpenseTotalOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 월별 지출 합계 목록 */
-  months: Maybe<Array<MonthlyExpenseTotalDto>>;
+  months?: Maybe<Array<MonthlyExpenseTotalDto>>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2146,17 +2187,17 @@ export type LoginInput = {
 };
 
 export type LoginOutput = {
-  __typename: "LoginOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "LoginOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 토큰 */
-  token: Maybe<Scalars["String"]["output"]>;
+  token?: Maybe<Scalars["String"]["output"]>;
   /** 사용자 ID */
-  userId: Maybe<Scalars["Int"]["output"]>;
+  userId?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type MeDto = {
-  __typename: "MeDto";
+  __typename?: "MeDto";
   /** 이메일 */
   email: Scalars["String"]["output"];
   /** 사용자 ID */
@@ -2166,15 +2207,15 @@ export type MeDto = {
 };
 
 export type MeOutput = {
-  __typename: "MeOutput";
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "MeOutput";
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
   /** 사용자 정보 */
-  user: Maybe<MeDto>;
+  user?: Maybe<MeDto>;
 };
 
 export type MonthlyExpenseTotalDto = {
-  __typename: "MonthlyExpenseTotalDto";
+  __typename?: "MonthlyExpenseTotalDto";
   /** 월 */
   month: Scalars["Int"]["output"];
   /** 총 건수 */
@@ -2184,7 +2225,7 @@ export type MonthlyExpenseTotalDto = {
 };
 
 export type Mutation = {
-  __typename: "Mutation";
+  __typename?: "Mutation";
   createAccount: CreateAccountOutput;
   createCategory: CreateCategoryOutput;
   createExpense: CreateExpenseOutput;
@@ -2254,7 +2295,7 @@ export type MutationUpsertBudgetArgs = {
 };
 
 export type Query = {
-  __typename: "Query";
+  __typename?: "Query";
   findAccounts: FindAccountsOutput;
   findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
@@ -2293,9 +2334,9 @@ export type UpdateAccountInput = {
 };
 
 export type UpdateAccountOutput = {
-  __typename: "UpdateAccountOutput";
-  account: Maybe<AccountDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  __typename?: "UpdateAccountOutput";
+  account?: Maybe<AccountDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2307,10 +2348,10 @@ export type UpdateCategoryInput = {
 };
 
 export type UpdateCategoryOutput = {
-  __typename: "UpdateCategoryOutput";
+  __typename?: "UpdateCategoryOutput";
   /** 수정된 카테고리 */
-  category: Maybe<CategoryDto>;
-  error: Maybe<Scalars["String"]["output"]>;
+  category?: Maybe<CategoryDto>;
+  error?: Maybe<Scalars["String"]["output"]>;
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2336,11 +2377,11 @@ export type UpdateExpenseInput = {
 };
 
 export type UpdateExpenseOutput = {
-  __typename: "UpdateExpenseOutput";
+  __typename?: "UpdateExpenseOutput";
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 수정된 지출 */
-  expense: Maybe<ExpenseDto>;
+  expense?: Maybe<ExpenseDto>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -2357,11 +2398,11 @@ export type UpsertBudgetInput = {
 };
 
 export type UpsertBudgetOutput = {
-  __typename: "UpsertBudgetOutput";
+  __typename?: "UpsertBudgetOutput";
   /** 예산 */
-  budget: Maybe<BudgetDto>;
+  budget?: Maybe<BudgetDto>;
   /** 에러 메시지 */
-  error: Maybe<Scalars["String"]["output"]>;
+  error?: Maybe<Scalars["String"]["output"]>;
   /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
@@ -2371,7 +2412,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 export type LoginMutation = {
-  login: { __typename: "LoginOutput"; ok: boolean; error: string | null; token: string | null; userId: number | null };
+  __typename?: "Mutation";
+  login: {
+    __typename?: "LoginOutput";
+    ok: boolean;
+    error?: string | null;
+    token?: string | null;
+    userId?: number | null;
+  };
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -2379,33 +2427,36 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 export type CreateUserMutation = {
-  createUser: { __typename: "CreateUserOutput"; ok: boolean; error: string | null; userId: number | null };
+  __typename?: "Mutation";
+  createUser: { __typename?: "CreateUserOutput"; ok: boolean; error?: string | null; userId?: number | null };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
+  __typename?: "Query";
   me: {
-    __typename: "MeOutput";
+    __typename?: "MeOutput";
     ok: boolean;
-    error: string | null;
-    user: { __typename: "MeDto"; id: number; email: string; name: string } | null;
+    error?: string | null;
+    user?: { __typename?: "MeDto"; id: number; email: string; name: string } | null;
   };
 };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type LogoutMutation = { logout: boolean };
+export type LogoutMutation = { __typename?: "Mutation"; logout: boolean };
 
 export type FindAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FindAccountsQuery = {
+  __typename?: "Query";
   findAccounts: {
-    __typename: "FindAccountsOutput";
+    __typename?: "FindAccountsOutput";
     ok: boolean;
-    error: string | null;
-    accounts: Array<{
-      __typename: "AccountDto";
+    error?: string | null;
+    accounts?: Array<{
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -2421,12 +2472,13 @@ export type CreateAccountMutationVariables = Exact<{
 }>;
 
 export type CreateAccountMutation = {
+  __typename?: "Mutation";
   createAccount: {
-    __typename: "CreateAccountOutput";
+    __typename?: "CreateAccountOutput";
     ok: boolean;
-    error: string | null;
-    account: {
-      __typename: "AccountDto";
+    error?: string | null;
+    account?: {
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -2442,12 +2494,13 @@ export type UpdateAccountMutationVariables = Exact<{
 }>;
 
 export type UpdateAccountMutation = {
+  __typename?: "Mutation";
   updateAccount: {
-    __typename: "UpdateAccountOutput";
+    __typename?: "UpdateAccountOutput";
     ok: boolean;
-    error: string | null;
-    account: {
-      __typename: "AccountDto";
+    error?: string | null;
+    account?: {
+      __typename?: "AccountDto";
       id: number;
       name: string;
       isActive: boolean;
@@ -2463,7 +2516,8 @@ export type DeleteAccountMutationVariables = Exact<{
 }>;
 
 export type DeleteAccountMutation = {
-  deleteAccount: { __typename: "DeleteAccountOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteAccount: { __typename?: "DeleteAccountOutput"; ok: boolean; error?: string | null };
 };
 
 export type CreateCategoryMutationVariables = Exact<{
@@ -2471,22 +2525,30 @@ export type CreateCategoryMutationVariables = Exact<{
 }>;
 
 export type CreateCategoryMutation = {
+  __typename?: "Mutation";
   createCategory: {
-    __typename: "CreateCategoryOutput";
+    __typename?: "CreateCategoryOutput";
     ok: boolean;
-    error: string | null;
-    category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+    error?: string | null;
+    category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
   };
 };
 
 export type FindCategoriesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FindCategoriesQuery = {
+  __typename?: "Query";
   findCategories: {
-    __typename: "FindCategoriesOutput";
+    __typename?: "FindCategoriesOutput";
     ok: boolean;
-    error: string | null;
-    categories: Array<{ __typename: "CategoryDto"; id: number; name: string; sortOrder: number }> | null;
+    error?: string | null;
+    categories?: Array<{
+      __typename?: "CategoryDto";
+      id: number;
+      name: string;
+      sortOrder: number;
+      totalExpense?: number | null;
+    }> | null;
   };
 };
 
@@ -2495,11 +2557,12 @@ export type UpdateCategoryMutationVariables = Exact<{
 }>;
 
 export type UpdateCategoryMutation = {
+  __typename?: "Mutation";
   updateCategory: {
-    __typename: "UpdateCategoryOutput";
+    __typename?: "UpdateCategoryOutput";
     ok: boolean;
-    error: string | null;
-    category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+    error?: string | null;
+    category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
   };
 };
 
@@ -2508,7 +2571,8 @@ export type DeleteCategoryMutationVariables = Exact<{
 }>;
 
 export type DeleteCategoryMutation = {
-  deleteCategory: { __typename: "DeleteCategoryOutput"; error: string | null; ok: boolean };
+  __typename?: "Mutation";
+  deleteCategory: { __typename?: "DeleteCategoryOutput"; error?: string | null; ok: boolean };
 };
 
 export type CreateExpenseMutationVariables = Exact<{
@@ -2516,21 +2580,22 @@ export type CreateExpenseMutationVariables = Exact<{
 }>;
 
 export type CreateExpenseMutation = {
+  __typename?: "Mutation";
   createExpense: {
-    __typename: "CreateExpenseOutput";
+    __typename?: "CreateExpenseOutput";
     ok: boolean;
-    error: string | null;
-    expense: {
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expense?: {
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     } | null;
   };
 };
@@ -2540,21 +2605,22 @@ export type UpdateExpenseMutationVariables = Exact<{
 }>;
 
 export type UpdateExpenseMutation = {
+  __typename?: "Mutation";
   updateExpense: {
-    __typename: "UpdateExpenseOutput";
+    __typename?: "UpdateExpenseOutput";
     ok: boolean;
-    error: string | null;
-    expense: {
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expense?: {
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     } | null;
   };
 };
@@ -2564,7 +2630,8 @@ export type DeleteExpenseMutationVariables = Exact<{
 }>;
 
 export type DeleteExpenseMutation = {
-  deleteExpense: { __typename: "DeleteExpenseOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteExpense: { __typename?: "DeleteExpenseOutput"; ok: boolean; error?: string | null };
 };
 
 export type FindExpensesWithCategoriesQueryVariables = Exact<{
@@ -2572,11 +2639,12 @@ export type FindExpensesWithCategoriesQueryVariables = Exact<{
 }>;
 
 export type FindExpensesWithCategoriesQuery = {
+  __typename?: "Query";
   findCategoryMonthlyExpense: {
-    __typename: "FindCategoryMonthlyExpenseOutput";
+    __typename?: "FindCategoryMonthlyExpenseOutput";
     ok: boolean;
-    error: string | null;
-    result: Array<{ __typename: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
+    error?: string | null;
+    result?: Array<{ __typename?: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
   };
 };
 
@@ -2585,12 +2653,13 @@ export type FindMonthlyExpenseTotalQueryVariables = Exact<{
 }>;
 
 export type FindMonthlyExpenseTotalQuery = {
+  __typename?: "Query";
   findMonthlyExpenseTotal: {
-    __typename: "FindMonthlyExpenseTotalOutput";
+    __typename?: "FindMonthlyExpenseTotalOutput";
     ok: boolean;
-    error: string | null;
-    months: Array<{
-      __typename: "MonthlyExpenseTotalDto";
+    error?: string | null;
+    months?: Array<{
+      __typename?: "MonthlyExpenseTotalDto";
       month: number;
       totalExpense: number;
       totalCount: number;
@@ -2603,22 +2672,23 @@ export type FindExpensesQueryVariables = Exact<{
 }>;
 
 export type FindExpensesQuery = {
+  __typename?: "Query";
   findExpenseMonthly: {
-    __typename: "FindExpenseMonthlyOutput";
-    totalCount: number | null;
+    __typename?: "FindExpenseMonthlyOutput";
+    totalCount?: number | null;
     ok: boolean;
-    error: string | null;
-    expenses: Array<{
-      __typename: "ExpenseDto";
+    error?: string | null;
+    expenses?: Array<{
+      __typename?: "ExpenseDto";
       id: number;
       name: string;
       amount: number;
       postedAt: unknown;
-      accountId: number | null;
-      categoryId: number | null;
-      merchantId: number | null;
-      merchantText: string | null;
-      memo: string | null;
+      accountId?: number | null;
+      categoryId?: number | null;
+      merchantId?: number | null;
+      merchantText?: string | null;
+      memo?: string | null;
     }> | null;
   };
 };
@@ -2628,11 +2698,12 @@ export type UpsertBudgetMutationVariables = Exact<{
 }>;
 
 export type UpsertBudgetMutation = {
+  __typename?: "Mutation";
   upsertBudget: {
-    __typename: "UpsertBudgetOutput";
+    __typename?: "UpsertBudgetOutput";
     ok: boolean;
-    error: string | null;
-    budget: { __typename: "BudgetDto"; id: number; yearMonth: string; totalAmount: number } | null;
+    error?: string | null;
+    budget?: { __typename?: "BudgetDto"; id: number; yearMonth: string; totalAmount: number } | null;
   };
 };
 
@@ -2641,7 +2712,8 @@ export type DeleteBudgetMutationVariables = Exact<{
 }>;
 
 export type DeleteBudgetMutation = {
-  deleteBudget: { __typename: "DeleteBudgetOutput"; ok: boolean; error: string | null };
+  __typename?: "Mutation";
+  deleteBudget: { __typename?: "DeleteBudgetOutput"; ok: boolean; error?: string | null };
 };
 
 export type FindBudgetsQueryVariables = Exact<{
@@ -2649,16 +2721,17 @@ export type FindBudgetsQueryVariables = Exact<{
 }>;
 
 export type FindBudgetsQuery = {
+  __typename?: "Query";
   findBudgets: {
-    __typename: "FindBudgetOutput";
+    __typename?: "FindBudgetOutput";
     ok: boolean;
-    error: string | null;
-    budgets: Array<{
-      __typename: "BudgetDto";
+    error?: string | null;
+    budgets?: Array<{
+      __typename?: "BudgetDto";
       id: number;
       yearMonth: string;
       totalAmount: number;
-      category: { __typename: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
+      category?: { __typename?: "CategoryDto"; id: number; name: string; sortOrder: number } | null;
     }> | null;
   };
 };

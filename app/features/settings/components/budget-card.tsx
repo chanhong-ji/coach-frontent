@@ -17,6 +17,7 @@ import {
 import type { BudgetDto, CategoryDto } from "~/graphql/__generated__/graphql";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
+import { currency } from "../utils/util";
 
 type Props = {
   title?: string;
@@ -26,10 +27,6 @@ type Props = {
   year: number;
   month: number;
 };
-
-function currency(n: number) {
-  return n.toLocaleString(undefined, { style: "currency", currency: "KRW" });
-}
 
 function ProgressBar({ pct }: { pct: number }) {
   const value = Math.max(0, Math.min(100, pct));
@@ -44,7 +41,7 @@ function ProgressBar({ pct }: { pct: number }) {
   );
 }
 
-export default function BudgetTableCard({ title = "Budgets", budgets, categories, year, month, className }: Props) {
+export default function BudgetTableCard({ budgets, categories, year, month, className }: Props) {
   const fetcher = useFetcher();
   const [addBudgetOpen, setAddBudgetOpen] = useState(false);
   const [deleteBudgetOpen, setDeleteBudgetOpen] = useState(false);
@@ -85,7 +82,7 @@ export default function BudgetTableCard({ title = "Budgets", budgets, categories
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>Budgets</CardTitle>
         <Dialog open={addBudgetOpen} onOpenChange={setAddBudgetOpen}>
           <DialogTrigger asChild onClick={handleAddBudgetClick}>
             <Button size="sm" variant="link" className="hover:cursor-pointer">
@@ -111,13 +108,16 @@ export default function BudgetTableCard({ title = "Budgets", budgets, categories
           <TableBody>
             <AlertDialog open={deleteBudgetOpen} onOpenChange={setDeleteBudgetOpen}>
               {budgets?.map((budget) => {
-                const pct = budget.totalAmount > 0 ? Math.round((budget.totalAmount / budget.totalAmount) * 100) : 0;
+                const pct =
+                  budget.totalAmount > 0
+                    ? Math.round(((budget.category?.totalExpense ?? 0) / budget.totalAmount) * 100)
+                    : 0;
                 return (
                   <TableRow key={budget.id}>
                     <TableCell className="font-medium">{budget.category?.name ?? "Total"}</TableCell>
                     <TableCell className="tabular-nums">{currency(budget.totalAmount)}</TableCell>
                     {/* spent amount */}
-                    <TableCell className="tabular-nums">{currency(0)}</TableCell>
+                    <TableCell className="tabular-nums">{currency(budget.category?.totalExpense ?? 0)}</TableCell>
                     <TableCell className="pr-8">
                       <ProgressBar pct={pct} />
                     </TableCell>

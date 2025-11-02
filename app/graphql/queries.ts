@@ -128,6 +128,7 @@ export const FIND_CATEGORIES_QUERY = gql`
         id
         name
         sortOrder
+        totalExpense
       }
     }
   }
@@ -292,6 +293,7 @@ export const FIND_BUDGETS_QUERY = gql`
           id
           name
           sortOrder
+          totalExpense
         }
       }
     }

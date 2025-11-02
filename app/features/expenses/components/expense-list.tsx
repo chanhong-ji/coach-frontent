@@ -74,6 +74,11 @@ export function ExpenseList({
 
   return (
     <div className="w-2xl space-y-4 border-2 border-accent-foreground/2 mt-3">
+      {expenses.length === 0 && (
+        <div className="text-center text-sm text-muted-foreground">
+          이번달의 지출 내역이 없습니다. 지출 내역을 추가해주세요.
+        </div>
+      )}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         {expenses.map((expense, index) => (
           <Item key={index} variant="outline">
