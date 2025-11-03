@@ -1,13 +1,16 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
+import type { Route } from "./+types/dashboard-summary-page";
+import { createClient } from "~/client";
+import { findMonthlyExpenseTotal, findSummary } from "~/features/expenses/lib/loader-helpers";
+import { DateTime } from "luxon";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/common/components/ui/card";
 import { Badge } from "~/common/components/ui/badge";
+import { currency } from "~/features/settings/utils/util";
 import { Separator } from "~/common/components/ui/separator";
 import { Progress } from "~/common/components/ui/progress";
-import { Info, Sparkles } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { Sparkles } from "lucide-react";
+import { Info } from "lucide-react";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { TabsContent } from "~/common/components/ui/tabs";
-import type { MonthlyExpenseTotalDto, SummaryDto } from "~/graphql/__generated__/graphql";
-import { currency } from "~/features/settings/utils/util";
-import { DateTime } from "luxon";
 
 const aiInsight = `Your financial overview for November shows a positive trend with a 5.3% decrease in overall spending. Groceries and Dining Out remain your top expenses. Consider reviewing your Dining Out budget for potential savings. Your daily spending patterns indicate higher expenses on weekends. The system detected an unusual large transaction of $350 on November 20th in 'Electronics', which is above your typical spending. Recurring subscriptions include Netflix ($15.99) and Spotify ($10.99), both due next week.`;
 
@@ -26,13 +29,36 @@ const monthLabels = {
   12: "December",
 };
 
-export function SummaryTab({
-  summary,
-  monthlyExpenseTotal,
-}: {
-  summary: SummaryDto;
-  monthlyExpenseTotal: MonthlyExpenseTotalDto[];
-}) {
+export const meta: Route.MetaFunction = () => [{ title: "Dashboard - Summary" }];
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = createClient(request);
+  const today = DateTime.now();
+  const months = Array.from({ length: today.month }, (_, i) => today.month - i);
+  const [
+    {
+      findSummary: { summary },
+    },
+    {
+      findMonthlyExpenseTotal: { months: monthlyExpenseTotal },
+    },
+  ] = await Promise.all([
+    findSummary(client, {
+      thisYear: today.year,
+      thisMonth: today.month,
+    }),
+    findMonthlyExpenseTotal(client, today.year, months),
+  ]);
+
+  return { summary, monthlyExpenseTotal: monthlyExpenseTotal ?? [] };
+};
+
+export async function action({}: Route.ActionArgs) {
+  return {};
+}
+
+export default function DashboardSummaryPage({ loaderData }: Route.ComponentProps) {
+  const { summary, monthlyExpenseTotal } = loaderData;
   const spendingMonthly = monthlyExpenseTotal.map((m) => ({
     month: monthLabels[m.month as keyof typeof monthLabels],
     amount: m.totalExpense,

@@ -2,7 +2,12 @@ import { type RouteConfig, index, prefix, route } from "@react-router/dev/routes
 
 export default [
   index("features/home/pages/home-redirection-page.tsx"),
-  route("/dashboard", "features/dashboard/pages/dashboard-page.tsx"), //
+  route("/dashboard", "features/dashboard/pages/dashboard-page.tsx", [
+    index("features/dashboard/pages/dashboard-redirect-page.tsx"),
+    route("summary", "features/dashboard/pages/dashboard-summary-page.tsx"),
+    route("budget", "features/dashboard/pages/dashboard-budget-page.tsx"),
+    route("coach", "features/dashboard/pages/dashboard-coach-page.tsx"),
+  ]), //
   ...prefix("/expenses", [
     index("features/expenses/pages/expenses-redirection-page.tsx"), //
     route("/:year/:month", "features/expenses/pages/expenses-page.tsx"),

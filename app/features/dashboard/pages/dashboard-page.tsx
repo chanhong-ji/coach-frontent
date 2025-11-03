@@ -1,11 +1,8 @@
 import type { Route } from "./+types/dashboard-page";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/common/components/ui/tabs";
-import { SummaryTab } from "../tabs/summary-tab";
+import { Tabs, TabsList, TabsTrigger } from "~/common/components/ui/tabs";
 import { createClient } from "~/client";
-import { findMonthlyExpenseTotal, findSummary, getLoggedInUser } from "~/features/expenses/lib/loader-helpers";
-import { DateTime } from "luxon";
-import { redirect } from "react-router";
+import { getLoggedInUser } from "~/features/expenses/lib/loader-helpers";
+import { Outlet, redirect, useLocation, useNavigate } from "react-router";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = createClient(request);
@@ -13,32 +10,31 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!user) {
     return redirect("/login");
   }
-
-  const today = DateTime.now();
-  const months = Array.from({ length: today.month }, (_, i) => today.month - i);
-  const [
-    {
-      findSummary: { summary },
-    },
-    {
-      findMonthlyExpenseTotal: { months: monthlyExpenseTotal },
-    },
-  ] = await Promise.all([
-    findSummary(client, {
-      thisYear: today.year,
-      thisMonth: today.month,
-    }),
-    findMonthlyExpenseTotal(client, today.year, months),
-  ]);
-
-  return { summary, monthlyExpenseTotal };
+  return {};
 };
 
-export default function DashboardPage({ loaderData }: Route.ComponentProps) {
-  const { summary, monthlyExpenseTotal } = loaderData;
+export default function DashboardPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const pathname = location.pathname;
+  const currentTab = pathname.includes("/dashboard/budget")
+    ? "budget"
+    : pathname.includes("/dashboard/coach")
+      ? "coach"
+      : "summary";
   return (
     <div className="mx-auto w-full max-w-6xl p-4 md:p-6 space-y-6">
-      <Tabs defaultValue="summary" className="">
+      <Tabs
+        value={currentTab}
+        onValueChange={(next) => {
+          if (next === "summary") {
+            navigate("/dashboard/summary");
+            return;
+          }
+          navigate(`/dashboard/${next}`);
+        }}
+        className=""
+      >
         <div className="">
           <TabsList className="grid grid-cols-3">
             <TabsTrigger
@@ -62,33 +58,7 @@ export default function DashboardPage({ loaderData }: Route.ComponentProps) {
           </TabsList>
         </div>
 
-        <SummaryTab
-          summary={summary ?? { lastMonthExpense: 0, thisMonthExpense: 0, topCategory: [] }}
-          monthlyExpenseTotal={monthlyExpenseTotal ?? []}
-        />
-        <TabsContent value="budget">
-          <Card>
-            <CardHeader>
-              <CardTitle>Budget & Alerts</CardTitle>
-              <CardDescription>Coming soon. Wire up your GraphQL queries here.</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Example: category budgets, forecast warnings, upcoming alerts.
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="coach">
-          <Card>
-            <CardHeader>
-              <CardTitle>AI Coach & Recurring</CardTitle>
-              <CardDescription>Coming soon.</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Example: chatbot, recurring subscription detection.
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <Outlet />
       </Tabs>
     </div>
   );

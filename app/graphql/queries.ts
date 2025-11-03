@@ -208,19 +208,6 @@ export const DELETE_EXPENSE_MUTATION = gql`
   }
 `;
 
-export const FIND_EXPENSES_WITH_CATEGORIES_QUERY = gql`
-  query FindExpensesWithCategories($findCategoryMonthlyExpenseInput: FindCategoryMonthlyExpenseInput!) {
-    findCategoryMonthlyExpense(FindCategoryMonthlyExpenseInput: $findCategoryMonthlyExpenseInput) {
-      ok
-      error
-      result {
-        categoryId
-        totalExpense
-      }
-    }
-  }
-`;
-
 export const FIND_MONTHLY_EXPENSE_TOTAL_QUERY = gql`
   query FindMonthlyExpenseTotal($findMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput!) {
     findMonthlyExpenseTotal(FindMonthlyExpenseTotalInput: $findMonthlyExpenseTotalInput) {
