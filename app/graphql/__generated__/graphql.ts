@@ -42,6 +42,42 @@ export enum AccountType {
   Other = "OTHER",
 }
 
+export type AdviceDto = {
+  __typename?: "AdviceDto";
+  /** 조언 내용 */
+  adviceText: Scalars["String"]["output"];
+  /** 조언 카테고리 이름 */
+  categoryName?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 생성 일시 */
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  /** 조언 ID */
+  id: Scalars["Int"]["output"];
+  /** 조언 기간 종료일 */
+  periodEnd?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 기간 시작일 */
+  periodStart?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 태그 */
+  tag?: Maybe<AdviceTag>;
+  /** 조언 타입 */
+  type: AdviceType;
+  /** 조언 수정 일시 */
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+};
+
+export enum AdviceTag {
+  OnTrack = "ON_TRACK",
+  Overrun = "OVERRUN",
+  Warning = "WARNING",
+  Watch = "WATCH",
+}
+
+export enum AdviceType {
+  BudgetStatus = "BUDGET_STATUS",
+  CategoryTips = "CATEGORY_TIPS",
+  HabitInsight = "HABIT_INSIGHT",
+  SummaryReport = "SUMMARY_REPORT",
+}
+
 export type BudgetDto = {
   __typename?: "BudgetDto";
   /** 카테고리 */
@@ -222,6 +258,16 @@ export type FindAccountsOutput = {
   /** 결제 수단 목록 */
   accounts?: Maybe<Array<AccountDto>>;
   error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+};
+
+export type FindAdvicesOutput = {
+  __typename?: "FindAdvicesOutput";
+  /** 조언 목록 */
+  advices?: Maybe<Array<AdviceDto>>;
+  /** 에러 메시지 */
+  error?: Maybe<Scalars["String"]["output"]>;
+  /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -437,6 +483,7 @@ export type MutationUpsertBudgetArgs = {
 export type Query = {
   __typename?: "Query";
   findAccounts: FindAccountsOutput;
+  findAdvices: FindAdvicesOutput;
   findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
@@ -789,20 +836,6 @@ export type DeleteExpenseMutation = {
   deleteExpense: { __typename?: "DeleteExpenseOutput"; ok: boolean; error?: string | null };
 };
 
-export type FindExpensesWithCategoriesQueryVariables = Exact<{
-  findCategoryMonthlyExpenseInput: FindCategoryMonthlyExpenseInput;
-}>;
-
-export type FindExpensesWithCategoriesQuery = {
-  __typename?: "Query";
-  findCategoryMonthlyExpense: {
-    __typename?: "FindCategoryMonthlyExpenseOutput";
-    ok: boolean;
-    error?: string | null;
-    result?: Array<{ __typename?: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
-  };
-};
-
 export type FindMonthlyExpenseTotalQueryVariables = Exact<{
   findMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
 }>;
@@ -919,6 +952,29 @@ export type FindSummaryQuery = {
         totalExpense?: number | null;
       }>;
     } | null;
+  };
+};
+
+export type FindAgentAdvicesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FindAgentAdvicesQuery = {
+  __typename?: "Query";
+  findAdvices: {
+    __typename?: "FindAdvicesOutput";
+    ok: boolean;
+    error?: string | null;
+    advices?: Array<{
+      __typename?: "AdviceDto";
+      id: number;
+      adviceText: string;
+      type: AdviceType;
+      tag?: AdviceTag | null;
+      categoryName?: string | null;
+      periodStart?: string | null;
+      periodEnd?: string | null;
+      createdAt?: unknown | null;
+      updatedAt?: unknown | null;
+    }> | null;
   };
 };
 
@@ -1611,60 +1667,6 @@ export const DeleteExpenseDocument = {
     },
   ],
 } as unknown as DocumentNode<DeleteExpenseMutation, DeleteExpenseMutationVariables>;
-export const FindExpensesWithCategoriesDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "FindExpensesWithCategories" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "findCategoryMonthlyExpenseInput" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "FindCategoryMonthlyExpenseInput" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "findCategoryMonthlyExpense" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "FindCategoryMonthlyExpenseInput" },
-                value: { kind: "Variable", name: { kind: "Name", value: "findCategoryMonthlyExpenseInput" } },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "ok" } },
-                { kind: "Field", name: { kind: "Name", value: "error" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "result" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "categoryId" } },
-                      { kind: "Field", name: { kind: "Name", value: "totalExpense" } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<FindExpensesWithCategoriesQuery, FindExpensesWithCategoriesQueryVariables>;
 export const FindMonthlyExpenseTotalDocument = {
   kind: "Document",
   definitions: [
@@ -2009,6 +2011,50 @@ export const FindSummaryDocument = {
     },
   ],
 } as unknown as DocumentNode<FindSummaryQuery, FindSummaryQueryVariables>;
+export const FindAgentAdvicesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FindAgentAdvices" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "findAdvices" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "ok" } },
+                { kind: "Field", name: { kind: "Name", value: "error" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "advices" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "adviceText" } },
+                      { kind: "Field", name: { kind: "Name", value: "type" } },
+                      { kind: "Field", name: { kind: "Name", value: "tag" } },
+                      { kind: "Field", name: { kind: "Name", value: "categoryName" } },
+                      { kind: "Field", name: { kind: "Name", value: "periodStart" } },
+                      { kind: "Field", name: { kind: "Name", value: "periodEnd" } },
+                      { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                      { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FindAgentAdvicesQuery, FindAgentAdvicesQueryVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -2041,6 +2087,42 @@ export enum AccountType {
   Card = "CARD",
   Cash = "CASH",
   Other = "OTHER",
+}
+
+export type AdviceDto = {
+  __typename?: "AdviceDto";
+  /** 조언 내용 */
+  adviceText: Scalars["String"]["output"];
+  /** 조언 카테고리 이름 */
+  categoryName?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 생성 일시 */
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  /** 조언 ID */
+  id: Scalars["Int"]["output"];
+  /** 조언 기간 종료일 */
+  periodEnd?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 기간 시작일 */
+  periodStart?: Maybe<Scalars["String"]["output"]>;
+  /** 조언 태그 */
+  tag?: Maybe<AdviceTag>;
+  /** 조언 타입 */
+  type: AdviceType;
+  /** 조언 수정 일시 */
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+};
+
+export enum AdviceTag {
+  OnTrack = "ON_TRACK",
+  Overrun = "OVERRUN",
+  Warning = "WARNING",
+  Watch = "WATCH",
+}
+
+export enum AdviceType {
+  BudgetStatus = "BUDGET_STATUS",
+  CategoryTips = "CATEGORY_TIPS",
+  HabitInsight = "HABIT_INSIGHT",
+  SummaryReport = "SUMMARY_REPORT",
 }
 
 export type BudgetDto = {
@@ -2223,6 +2305,16 @@ export type FindAccountsOutput = {
   /** 결제 수단 목록 */
   accounts?: Maybe<Array<AccountDto>>;
   error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+};
+
+export type FindAdvicesOutput = {
+  __typename?: "FindAdvicesOutput";
+  /** 조언 목록 */
+  advices?: Maybe<Array<AdviceDto>>;
+  /** 에러 메시지 */
+  error?: Maybe<Scalars["String"]["output"]>;
+  /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2438,6 +2530,7 @@ export type MutationUpsertBudgetArgs = {
 export type Query = {
   __typename?: "Query";
   findAccounts: FindAccountsOutput;
+  findAdvices: FindAdvicesOutput;
   findBudgets: FindBudgetOutput;
   findCategories: FindCategoriesOutput;
   findCategoryMonthlyExpense: FindCategoryMonthlyExpenseOutput;
@@ -2790,20 +2883,6 @@ export type DeleteExpenseMutation = {
   deleteExpense: { __typename?: "DeleteExpenseOutput"; ok: boolean; error?: string | null };
 };
 
-export type FindExpensesWithCategoriesQueryVariables = Exact<{
-  findCategoryMonthlyExpenseInput: FindCategoryMonthlyExpenseInput;
-}>;
-
-export type FindExpensesWithCategoriesQuery = {
-  __typename?: "Query";
-  findCategoryMonthlyExpense: {
-    __typename?: "FindCategoryMonthlyExpenseOutput";
-    ok: boolean;
-    error?: string | null;
-    result?: Array<{ __typename?: "CategoryExpense"; categoryId: number; totalExpense: number }> | null;
-  };
-};
-
 export type FindMonthlyExpenseTotalQueryVariables = Exact<{
   findMonthlyExpenseTotalInput: FindMonthlyExpenseTotalInput;
 }>;
@@ -2920,5 +2999,28 @@ export type FindSummaryQuery = {
         totalExpense?: number | null;
       }>;
     } | null;
+  };
+};
+
+export type FindAgentAdvicesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FindAgentAdvicesQuery = {
+  __typename?: "Query";
+  findAdvices: {
+    __typename?: "FindAdvicesOutput";
+    ok: boolean;
+    error?: string | null;
+    advices?: Array<{
+      __typename?: "AdviceDto";
+      id: number;
+      adviceText: string;
+      type: AdviceType;
+      tag?: AdviceTag | null;
+      categoryName?: string | null;
+      periodStart?: string | null;
+      periodEnd?: string | null;
+      createdAt?: unknown | null;
+      updatedAt?: unknown | null;
+    }> | null;
   };
 };

@@ -1,16 +1,16 @@
 import type { Route } from "./+types/dashboard-summary-page";
 import { createClient } from "~/client";
-import { findMonthlyExpenseTotal, findSummary } from "~/features/expenses/lib/loader-helpers";
+import { findAgentAdvices, findMonthlyExpenseTotal, findSummary } from "~/features/expenses/lib/loader-helpers";
 import { DateTime } from "luxon";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/common/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Badge } from "~/common/components/ui/badge";
 import { currency } from "~/features/settings/utils/util";
 import { Separator } from "~/common/components/ui/separator";
 import { Progress } from "~/common/components/ui/progress";
-import { Sparkles } from "lucide-react";
 import { Info } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { TabsContent } from "~/common/components/ui/tabs";
+import { AdviceType } from "~/graphql/__generated__/graphql";
 
 const aiInsight = `Your financial overview for November shows a positive trend with a 5.3% decrease in overall spending. Groceries and Dining Out remain your top expenses. Consider reviewing your Dining Out budget for potential savings. Your daily spending patterns indicate higher expenses on weekends. The system detected an unusual large transaction of $350 on November 20th in 'Electronics', which is above your typical spending. Recurring subscriptions include Netflix ($15.99) and Spotify ($10.99), both due next week.`;
 
@@ -42,15 +42,19 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     {
       findMonthlyExpenseTotal: { months: monthlyExpenseTotal },
     },
+    {
+      findAdvices: { advices },
+    },
   ] = await Promise.all([
     findSummary(client, {
       thisYear: today.year,
       thisMonth: today.month,
     }),
     findMonthlyExpenseTotal(client, today.year, months),
+    findAgentAdvices(client),
   ]);
 
-  return { summary, monthlyExpenseTotal: monthlyExpenseTotal ?? [] };
+  return { summary, monthlyExpenseTotal: monthlyExpenseTotal ?? [], advices: advices ?? [] };
 };
 
 export async function action({}: Route.ActionArgs) {
@@ -58,7 +62,7 @@ export async function action({}: Route.ActionArgs) {
 }
 
 export default function DashboardSummaryPage({ loaderData }: Route.ComponentProps) {
-  const { summary, monthlyExpenseTotal } = loaderData;
+  const { summary, monthlyExpenseTotal, advices } = loaderData;
   const spendingMonthly = monthlyExpenseTotal.map((m) => ({
     month: monthLabels[m.month as keyof typeof monthLabels],
     amount: m.totalExpense,
@@ -125,17 +129,23 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
           </CardContent>
         </Card>
 
-        {/* AI Financial Insights */}
         <Card className="bg-primary/10 border-none">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              <CardTitle>AI Financial Insights</CardTitle>
-            </div>
-            <CardDescription className="sr-only">Automated monthly coaching summary</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-6 text-foreground/90">{aiInsight}</p>
+          <CardContent className="space-y-6">
+            <section className="space-y-2">
+              <CardTitle>AI 월간 소비 리포트</CardTitle>
+              <p className="text-sm leading-6 text-foreground/90">
+                {advices.find((a) => a.type === AdviceType.SummaryReport)?.adviceText ?? ""}
+              </p>
+            </section>
+
+            <Separator />
+
+            <section className="space-y-2">
+              <CardTitle>AI 소비 습관 인사이트</CardTitle>
+              <p className="text-sm leading-6 text-foreground/90">
+                {advices.find((a) => a.type === AdviceType.HabitInsight)?.adviceText ?? ""}
+              </p>
+            </section>
           </CardContent>
         </Card>
       </div>

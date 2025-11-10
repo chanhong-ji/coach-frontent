@@ -13,6 +13,8 @@ import type {
   DeleteExpenseMutationVariables,
   FindAccountsQuery,
   FindAccountsQueryVariables,
+  FindAgentAdvicesQuery,
+  FindAgentAdvicesQueryVariables,
   FindBudgetInput,
   FindBudgetsQuery,
   FindBudgetsQueryVariables,
@@ -39,6 +41,7 @@ import {
   DELETE_BUDGET_MUTATION,
   DELETE_EXPENSE_MUTATION,
   FIND_ACCOUNTS_QUERY,
+  FIND_AGENT_ADVICES_QUERY,
   FIND_BUDGETS_QUERY,
   FIND_CATEGORIES_QUERY,
   FIND_EXPENSES_QUERY,
@@ -157,4 +160,8 @@ export async function findSummary(client: GraphQLClient, input: FindSummaryInput
   return client.request<FindSummaryQuery, FindSummaryQueryVariables>(FIND_SUMMARY_QUERY, {
     findSummaryInput: input,
   });
+}
+
+export async function findAgentAdvices(client: GraphQLClient) {
+  return client.request<FindAgentAdvicesQuery, FindAgentAdvicesQueryVariables>(FIND_AGENT_ADVICES_QUERY);
 }

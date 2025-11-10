@@ -307,3 +307,24 @@ export const FIND_SUMMARY_QUERY = gql`
     }
   }
 `;
+
+// AGENT ADVICES
+export const FIND_AGENT_ADVICES_QUERY = gql`
+  query FindAgentAdvices {
+    findAdvices {
+      ok
+      error
+      advices {
+        id
+        adviceText
+        type
+        tag
+        categoryName
+        periodStart
+        periodEnd
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
