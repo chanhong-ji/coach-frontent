@@ -302,6 +302,7 @@ export const FIND_SUMMARY_QUERY = gql`
           name
           sortOrder
           totalExpense
+          thisMonthBudget
         }
       }
     }
@@ -325,6 +326,15 @@ export const FIND_AGENT_ADVICES_QUERY = gql`
         createdAt
         updatedAt
       }
+    }
+  }
+`;
+
+export const REQUEST_ADVICE_MUTATION = gql`
+  mutation RequestAdvice {
+    createAgentAdvice {
+      ok
+      error
     }
   }
 `;

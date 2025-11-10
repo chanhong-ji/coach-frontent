@@ -5,6 +5,7 @@ import { Navigation } from "./common/components/navigation";
 import { createClient } from "./client";
 import type { MeDto } from "./graphql/__generated__/graphql";
 import { getLoggedInUser } from "./features/expenses/lib/loader-helpers";
+import { Toaster } from "sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

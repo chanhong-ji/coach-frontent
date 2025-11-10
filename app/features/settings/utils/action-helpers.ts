@@ -18,6 +18,9 @@ import type {
   DeleteAccountInput,
   DeleteAccountMutation,
   DeleteAccountMutationVariables,
+  CreateAgentAdviceOutput,
+  RequestAdviceMutationVariables,
+  RequestAdviceMutation,
 } from "~/graphql/__generated__/graphql";
 import {
   CREATE_CATEGORY_MUTATION,
@@ -26,6 +29,7 @@ import {
   CREATE_ACCOUNT_MUTATION,
   UPDATE_ACCOUNT_MUTATION,
   DELETE_ACCOUNT_MUTATION,
+  REQUEST_ADVICE_MUTATION,
 } from "~/graphql/queries";
 
 export function createCategory(client: GraphQLClient, input: CreateCategoryInput) {
@@ -62,4 +66,8 @@ export function deleteAccount(client: GraphQLClient, input: DeleteAccountInput) 
   return client.request<DeleteAccountMutation, DeleteAccountMutationVariables>(DELETE_ACCOUNT_MUTATION, {
     deleteAccountInput: input,
   });
+}
+
+export function requestAdvice(client: GraphQLClient) {
+  return client.request<RequestAdviceMutation, RequestAdviceMutationVariables>(REQUEST_ADVICE_MUTATION);
 }

@@ -100,6 +100,8 @@ export type CategoryDto = {
   name: Scalars["String"]["output"];
   /** 정렬 순서 */
   sortOrder: Scalars["Int"]["output"];
+  /** 이번달 예산 */
+  thisMonthBudget?: Maybe<Scalars["Int"]["output"]>;
   /** 이번달 지출 총액 */
   totalExpense?: Maybe<Scalars["Int"]["output"]>;
 };
@@ -123,6 +125,14 @@ export type CreateAccountOutput = {
   __typename?: "CreateAccountOutput";
   account?: Maybe<AccountDto>;
   error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+};
+
+export type CreateAgentAdviceOutput = {
+  __typename?: "CreateAgentAdviceOutput";
+  /** 에러 메시지 */
+  error?: Maybe<Scalars["String"]["output"]>;
+  /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -413,6 +423,7 @@ export type MonthlyExpenseTotalDto = {
 export type Mutation = {
   __typename?: "Mutation";
   createAccount: CreateAccountOutput;
+  createAgentAdvice: CreateAgentAdviceOutput;
   createCategory: CreateCategoryOutput;
   createExpense: CreateExpenseOutput;
   createUser: CreateUserOutput;
@@ -950,6 +961,7 @@ export type FindSummaryQuery = {
         name: string;
         sortOrder: number;
         totalExpense?: number | null;
+        thisMonthBudget?: number | null;
       }>;
     } | null;
   };
@@ -976,6 +988,13 @@ export type FindAgentAdvicesQuery = {
       updatedAt?: unknown | null;
     }> | null;
   };
+};
+
+export type RequestAdviceMutationVariables = Exact<{ [key: string]: never }>;
+
+export type RequestAdviceMutation = {
+  __typename?: "Mutation";
+  createAgentAdvice: { __typename?: "CreateAgentAdviceOutput"; ok: boolean; error?: string | null };
 };
 
 export const LoginDocument = {
@@ -1997,6 +2016,7 @@ export const FindSummaryDocument = {
                             { kind: "Field", name: { kind: "Name", value: "name" } },
                             { kind: "Field", name: { kind: "Name", value: "sortOrder" } },
                             { kind: "Field", name: { kind: "Name", value: "totalExpense" } },
+                            { kind: "Field", name: { kind: "Name", value: "thisMonthBudget" } },
                           ],
                         },
                       },
@@ -2055,6 +2075,32 @@ export const FindAgentAdvicesDocument = {
     },
   ],
 } as unknown as DocumentNode<FindAgentAdvicesQuery, FindAgentAdvicesQueryVariables>;
+export const RequestAdviceDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RequestAdvice" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createAgentAdvice" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "ok" } },
+                { kind: "Field", name: { kind: "Name", value: "error" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RequestAdviceMutation, RequestAdviceMutationVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -2147,6 +2193,8 @@ export type CategoryDto = {
   name: Scalars["String"]["output"];
   /** 정렬 순서 */
   sortOrder: Scalars["Int"]["output"];
+  /** 이번달 예산 */
+  thisMonthBudget?: Maybe<Scalars["Int"]["output"]>;
   /** 이번달 지출 총액 */
   totalExpense?: Maybe<Scalars["Int"]["output"]>;
 };
@@ -2170,6 +2218,14 @@ export type CreateAccountOutput = {
   __typename?: "CreateAccountOutput";
   account?: Maybe<AccountDto>;
   error?: Maybe<Scalars["String"]["output"]>;
+  ok: Scalars["Boolean"]["output"];
+};
+
+export type CreateAgentAdviceOutput = {
+  __typename?: "CreateAgentAdviceOutput";
+  /** 에러 메시지 */
+  error?: Maybe<Scalars["String"]["output"]>;
+  /** 성공 여부 */
   ok: Scalars["Boolean"]["output"];
 };
 
@@ -2460,6 +2516,7 @@ export type MonthlyExpenseTotalDto = {
 export type Mutation = {
   __typename?: "Mutation";
   createAccount: CreateAccountOutput;
+  createAgentAdvice: CreateAgentAdviceOutput;
   createCategory: CreateCategoryOutput;
   createExpense: CreateExpenseOutput;
   createUser: CreateUserOutput;
@@ -2997,6 +3054,7 @@ export type FindSummaryQuery = {
         name: string;
         sortOrder: number;
         totalExpense?: number | null;
+        thisMonthBudget?: number | null;
       }>;
     } | null;
   };
@@ -3023,4 +3081,11 @@ export type FindAgentAdvicesQuery = {
       updatedAt?: unknown | null;
     }> | null;
   };
+};
+
+export type RequestAdviceMutationVariables = Exact<{ [key: string]: never }>;
+
+export type RequestAdviceMutation = {
+  __typename?: "Mutation";
+  createAgentAdvice: { __typename?: "CreateAgentAdviceOutput"; ok: boolean; error?: string | null };
 };

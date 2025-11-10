@@ -12,8 +12,6 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import { TabsContent } from "~/common/components/ui/tabs";
 import { AdviceType } from "~/graphql/__generated__/graphql";
 
-const aiInsight = `Your financial overview for November shows a positive trend with a 5.3% decrease in overall spending. Groceries and Dining Out remain your top expenses. Consider reviewing your Dining Out budget for potential savings. Your daily spending patterns indicate higher expenses on weekends. The system detected an unusual large transaction of $350 on November 20th in 'Electronics', which is above your typical spending. Recurring subscriptions include Netflix ($15.99) and Spotify ($10.99), both due next week.`;
-
 const monthLabels = {
   1: "January",
   2: "February",
@@ -113,13 +111,16 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
                       <div className="flex items-center gap-2">
                         <span>{c.name}</span>
                         <Badge variant="secondary" className="rounded-full px-2 text-[10px]">
-                          {c.totalExpense ? ((c.totalExpense / summary.thisMonthExpense) * 100).toFixed(2) : "0.00"}%
+                          {c.totalExpense && c.thisMonthBudget
+                            ? ((c.totalExpense / c.thisMonthBudget) * 100).toFixed(2)
+                            : "0.00"}
+                          %
                         </Badge>
                       </div>
                       <span className="tabular-nums">{currency(c.totalExpense ?? 0)}</span>
                     </div>
                     <Progress
-                      value={c.totalExpense ? (c.totalExpense / summary.thisMonthExpense) * 100 : 0}
+                      value={c.totalExpense && c.thisMonthBudget ? (c.totalExpense / c.thisMonthBudget) * 100 : 0}
                       className="h-2"
                     />
                   </div>
@@ -129,9 +130,9 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
           </CardContent>
         </Card>
 
-        <Card className="bg-primary/10 border-none">
-          <CardContent className="space-y-6">
-            <section className="space-y-2">
+        <Card className="p-0">
+          <CardContent className="h-full">
+            <section className="space-y-2 h-1/2 pt-10">
               <CardTitle>AI 월간 소비 리포트</CardTitle>
               <p className="text-sm leading-6 text-foreground/90">
                 {advices.find((a) => a.type === AdviceType.SummaryReport)?.adviceText ?? ""}
@@ -140,7 +141,7 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
 
             <Separator />
 
-            <section className="space-y-2">
+            <section className="space-y-2 h-1/2 pt-10">
               <CardTitle>AI 소비 습관 인사이트</CardTitle>
               <p className="text-sm leading-6 text-foreground/90">
                 {advices.find((a) => a.type === AdviceType.HabitInsight)?.adviceText ?? ""}

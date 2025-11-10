@@ -34,8 +34,9 @@ type Documents = {
     "\n  mutation UpsertBudget($upsertBudgetInput: UpsertBudgetInput!) {\n    upsertBudget(UpsertBudgetInput: $upsertBudgetInput) {\n      ok\n      error\n      budget {\n        id\n        yearMonth\n        totalAmount\n      }\n    }\n  }\n": typeof types.UpsertBudgetDocument,
     "\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n": typeof types.DeleteBudgetDocument,
     "\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n": typeof types.FindBudgetsDocument,
-    "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n": typeof types.FindSummaryDocument,
+    "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n          thisMonthBudget\n        }\n      }\n    }\n  }\n": typeof types.FindSummaryDocument,
     "\n  query FindAgentAdvices {\n    findAdvices {\n      ok\n      error\n      advices {\n        id\n        adviceText\n        type\n        tag\n        categoryName\n        periodStart\n        periodEnd\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.FindAgentAdvicesDocument,
+    "\n  mutation RequestAdvice {\n    createAgentAdvice {\n      ok\n      error\n    }\n  }\n": typeof types.RequestAdviceDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($LoginInput: LoginInput!) {\n    login(LoginInput: $LoginInput) {\n      ok\n      error\n      token\n      userId\n    }\n  }\n": types.LoginDocument,
@@ -58,8 +59,9 @@ const documents: Documents = {
     "\n  mutation UpsertBudget($upsertBudgetInput: UpsertBudgetInput!) {\n    upsertBudget(UpsertBudgetInput: $upsertBudgetInput) {\n      ok\n      error\n      budget {\n        id\n        yearMonth\n        totalAmount\n      }\n    }\n  }\n": types.UpsertBudgetDocument,
     "\n  mutation DeleteBudget($deleteBudgetInput: DeleteBudgetInput!) {\n    deleteBudget(DeleteBudgetInput: $deleteBudgetInput) {\n      ok\n      error\n    }\n  }\n": types.DeleteBudgetDocument,
     "\n  query FindBudgets($findBudgetInput: FindBudgetInput!) {\n    findBudgets(FindBudgetInput: $findBudgetInput) {\n      ok\n      error\n      budgets {\n        id\n        yearMonth\n        totalAmount\n        category {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n": types.FindBudgetsDocument,
-    "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n": types.FindSummaryDocument,
+    "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n          thisMonthBudget\n        }\n      }\n    }\n  }\n": types.FindSummaryDocument,
     "\n  query FindAgentAdvices {\n    findAdvices {\n      ok\n      error\n      advices {\n        id\n        adviceText\n        type\n        tag\n        categoryName\n        periodStart\n        periodEnd\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.FindAgentAdvicesDocument,
+    "\n  mutation RequestAdvice {\n    createAgentAdvice {\n      ok\n      error\n    }\n  }\n": types.RequestAdviceDocument,
 };
 
 /**
@@ -159,11 +161,15 @@ export function graphql(source: "\n  query FindBudgets($findBudgetInput: FindBud
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n        }\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n          thisMonthBudget\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindSummary($findSummaryInput: FindSummaryInput!) {\n    findSummary(FindSummaryInput: $findSummaryInput) {\n      ok\n      error\n      summary {\n        lastMonthExpense\n        thisMonthExpense\n        topCategory {\n          id\n          name\n          sortOrder\n          totalExpense\n          thisMonthBudget\n        }\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query FindAgentAdvices {\n    findAdvices {\n      ok\n      error\n      advices {\n        id\n        adviceText\n        type\n        tag\n        categoryName\n        periodStart\n        periodEnd\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindAgentAdvices {\n    findAdvices {\n      ok\n      error\n      advices {\n        id\n        adviceText\n        type\n        tag\n        categoryName\n        periodStart\n        periodEnd\n        createdAt\n        updatedAt\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RequestAdvice {\n    createAgentAdvice {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation RequestAdvice {\n    createAgentAdvice {\n      ok\n      error\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
