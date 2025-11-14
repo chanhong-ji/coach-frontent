@@ -11,6 +11,8 @@ import { Info } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { TabsContent } from "~/common/components/ui/tabs";
 import { AdviceType } from "~/graphql/__generated__/graphql";
+import { AiRequestButton } from "../components/ai-request-button";
+import { requestAdvice } from "~/features/settings/utils/action-helpers";
 
 const monthLabels = {
   1: "January",
@@ -55,12 +57,20 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   return { summary, monthlyExpenseTotal: monthlyExpenseTotal ?? [], advices: advices ?? [] };
 };
 
-export async function action({}: Route.ActionArgs) {
-  return {};
-}
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { client } = createClient(request);
+  const {
+    createAgentAdvice: { ok, error },
+  } = await requestAdvice(client);
+  if (!ok) {
+    return { ok: false, error: error };
+  }
+  return { ok: true };
+};
 
 export default function DashboardSummaryPage({ loaderData }: Route.ComponentProps) {
   const { summary, monthlyExpenseTotal, advices } = loaderData;
+  const periodEnd = advices?.[0]?.periodEnd;
   const spendingMonthly = monthlyExpenseTotal.map((m) => ({
     month: monthLabels[m.month as keyof typeof monthLabels],
     amount: m.totalExpense,
@@ -85,7 +95,7 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
             <div>
               <div className="text-4xl font-semibold">{currency(summary?.thisMonthExpense ?? 0)}</div>
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                {summary?.lastMonthExpense && (
+                {summary?.lastMonthExpense ? (
                   <span className="text-red-600">
                     {summary.thisMonthExpense > summary.lastMonthExpense ? "↑" : "↓"}
                     {(summary.lastMonthExpense
@@ -96,7 +106,7 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
                     ).toFixed(2)}
                     %{summary.thisMonthExpense > summary.lastMonthExpense ? " increase" : " decrease"} from last month
                   </span>
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -130,9 +140,10 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
           </CardContent>
         </Card>
 
-        <Card className="p-0">
+        <Card className="relative">
+          <AiRequestButton lastAdviceRequestTime={periodEnd} className="cursor-pointer" />
           <CardContent className="h-full">
-            <section className="space-y-2 h-1/2 pt-10">
+            <section className="space-y-2 h-1/2 pt-5">
               <CardTitle>AI 월간 소비 리포트</CardTitle>
               <p className="text-sm leading-6 text-foreground/90">
                 {advices.find((a) => a.type === AdviceType.SummaryReport)?.adviceText ?? ""}
@@ -141,7 +152,7 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
 
             <Separator />
 
-            <section className="space-y-2 h-1/2 pt-10">
+            <section className="space-y-2 h-1/2 pt-5 pb-10">
               <CardTitle>AI 소비 습관 인사이트</CardTitle>
               <p className="text-sm leading-6 text-foreground/90">
                 {advices.find((a) => a.type === AdviceType.HabitInsight)?.adviceText ?? ""}

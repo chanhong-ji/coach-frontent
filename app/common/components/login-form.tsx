@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/common/components/ui/field";
 import { Input } from "~/common/components/ui/input";
 import { Form, Link } from "react-router";
+import { BorderBeam } from "./ui/border-beam";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   error?: string;
@@ -12,7 +13,7 @@ interface LoginFormProps extends React.ComponentProps<"div"> {
 export function LoginForm({ error, className, ...props }: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="relative overflow-hidden">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>Enter your email below to login to your account</CardDescription>
@@ -41,6 +42,7 @@ export function LoginForm({ error, className, ...props }: LoginFormProps) {
             </FieldGroup>
           </Form>
         </CardContent>
+        <BorderBeam duration={4} size={300} reverse className="from-transparent via-green-500 to-transparent" />
       </Card>
     </div>
   );

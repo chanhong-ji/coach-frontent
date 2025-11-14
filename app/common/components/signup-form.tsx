@@ -1,4 +1,5 @@
 import { Form, Link } from "react-router";
+import { BorderBeam } from "./ui/border-beam";
 import { Button } from "~/common/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/common/components/ui/field";
@@ -6,7 +7,7 @@ import { Input } from "~/common/components/ui/input";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
-    <Card {...props}>
+    <Card className="relative overflow-hidden" {...props}>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>Enter your information below to create your account</CardDescription>
@@ -45,6 +46,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           </FieldGroup>
         </Form>
       </CardContent>
+      <BorderBeam duration={4} size={300} reverse className="from-transparent via-green-500 to-transparent" />
     </Card>
   );
 }

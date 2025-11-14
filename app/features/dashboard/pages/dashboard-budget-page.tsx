@@ -8,18 +8,15 @@ import { createClient } from "~/client";
 import { findAgentAdvices, findBudgets } from "~/features/expenses/lib/loader-helpers";
 import { AdviceTag, AdviceType, type BudgetDto } from "~/graphql/__generated__/graphql";
 import { Badge } from "~/common/components/ui/badge";
-import { Button } from "~/common/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/components/ui/tooltip";
 import { requestAdvice } from "~/features/settings/utils/action-helpers";
-import { Form, useFetcher } from "react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Toaster } from "~/common/components/ui/sonner";
+import { AiRequestButton } from "~/features/dashboard/components/ai-request-button";
 
 export const meta: Route.MetaFunction = () => [{ title: "Dashboard - Budget" }];
 
 const ADVICE_REQUEST_KEY = "last-advice-request-time";
-const COOLDOWN_MINUTES = 5;
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const today = DateTime.now();
@@ -98,13 +95,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function DashboardBudgetPage({ loaderData, actionData }: Route.ComponentProps) {
   const { budgets, advices } = loaderData;
-  const today = DateTime.now();
   const periodStart = advices?.[0]?.periodStart;
   const periodEnd = advices?.[0]?.periodEnd;
-  const periodCanRequest = periodEnd != null && periodEnd < today.toFormat("yyyy-MM-dd");
 
-  const [isInCooldown, setIsInCooldown] = useState(false);
-  const [remainingTime, setRemainingTime] = useState("");
+  // 요청 가능 여부와 쿨다운 체크는 버튼 컴포넌트 내부에서 수행합니다.
 
   useEffect(() => {
     if (!actionData) return;
@@ -112,7 +106,6 @@ export default function DashboardBudgetPage({ loaderData, actionData }: Route.Co
     if (actionData.ok) {
       if (typeof window !== "undefined") {
         localStorage.setItem(ADVICE_REQUEST_KEY, DateTime.now().toISO());
-        setIsInCooldown(true);
         toast.success("AI 조언 요청이 완료되었습니다. 잠시 후 결과를 확인할 수 있습니다.");
       }
     } else if (actionData.error) {
@@ -124,39 +117,7 @@ export default function DashboardBudgetPage({ loaderData, actionData }: Route.Co
     }
   }, [actionData]);
 
-  useEffect(() => {
-    const checkCooldown = () => {
-      if (typeof window === "undefined") return;
-
-      const lastRequestTime = localStorage.getItem(ADVICE_REQUEST_KEY);
-      if (!lastRequestTime) {
-        setIsInCooldown(false);
-        return;
-      }
-
-      const lastRequest = DateTime.fromISO(lastRequestTime);
-      const cooldownEnd = lastRequest.plus({ minutes: COOLDOWN_MINUTES });
-      const now = DateTime.now();
-
-      if (now < cooldownEnd) {
-        setIsInCooldown(true);
-        const diff = cooldownEnd.diff(now, ["minutes", "seconds"]);
-        const minutes = Math.floor(diff.minutes);
-        const seconds = Math.floor(diff.seconds);
-        setRemainingTime(`${minutes}분 ${seconds}초`);
-      } else {
-        setIsInCooldown(false);
-        localStorage.removeItem(ADVICE_REQUEST_KEY);
-      }
-    };
-
-    checkCooldown();
-    const interval = setInterval(checkCooldown, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const canRequest = periodCanRequest && !isInCooldown;
+  // canRequest는 버튼 내부에서 계산합니다.
 
   return (
     <TabsContent value="budget" className="space-y-6 mt-4">
@@ -186,24 +147,7 @@ export default function DashboardBudgetPage({ loaderData, actionData }: Route.Co
               <span>이번 달의 지출 데이터를 기반으로한 카테고리별 예산 사용률과 소비 비중 분석 결과입니다.</span>
               <span>AI가 각 항목의 초과 위험과 절약 여력을 진단해 구체적인 예산 조정 방향을 제안합니다.</span>
             </CardDescription>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="absolute right-0 bottom-0 m-4 inline-flex" tabIndex={0}>
-                  <Form method="post">
-                    <Button size="sm" disabled={!canRequest} className="cursor-pointer" type="submit">
-                      AI 조언 요청
-                    </Button>
-                  </Form>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                {isInCooldown
-                  ? `AI 조언 요청은 ${remainingTime} 후에 다시 가능합니다.`
-                  : !periodCanRequest
-                    ? "AI 조언 요청은 이전 조언 기간이 종료된 후에만 가능합니다."
-                    : "새로운 AI 조언을 요청합니다."}
-              </TooltipContent>
-            </Tooltip>
+            <AiRequestButton lastAdviceRequestTime={periodEnd} className="cursor-pointer" />
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-rows">
