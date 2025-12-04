@@ -9,7 +9,7 @@ import { findAgentAdvices, findBudgets } from "~/features/expenses/lib/loader-he
 import { AdviceTag, AdviceType, type BudgetDto } from "~/graphql/__generated__/graphql";
 import { Badge } from "~/common/components/ui/badge";
 import { requestAdvice } from "~/features/settings/utils/action-helpers";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { Toaster } from "~/common/components/ui/sonner";
 import { AiRequestButton } from "~/features/dashboard/components/ai-request-button";
@@ -109,7 +109,7 @@ export default function DashboardBudgetPage({ loaderData, actionData }: Route.Co
         toast.success("AI 조언 요청이 완료되었습니다. 잠시 후 결과를 확인할 수 있습니다.");
       }
     } else if (actionData.error) {
-      if (actionData.error === "ADVICE_TOTAL_COUNT_NOT_ENOUGH") {
+      if (actionData.error === "EXPENSE_TOTAL_COUNT_NOT_ENOUGH") {
         toast.error("AI 조언 생성을 위한 지출 내역이 부족합니다. 10개 이상의 지출 내역을 기록해주세요.");
       } else {
         toast.error(actionData.error);

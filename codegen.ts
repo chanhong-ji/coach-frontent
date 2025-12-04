@@ -3,7 +3,7 @@ import configuration from "./app/common/configuration";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: configuration.server.endPoint + "/graphql",
+  schema: configuration.server.endPoint,
   documents: "app/**/*.{gql,graphql,ts,tsx}",
   generates: {
     "./app/graphql/__generated__/": {

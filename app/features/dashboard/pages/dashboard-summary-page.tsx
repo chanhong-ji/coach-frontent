@@ -13,6 +13,8 @@ import { TabsContent } from "~/common/components/ui/tabs";
 import { AdviceType } from "~/graphql/__generated__/graphql";
 import { AiRequestButton } from "../components/ai-request-button";
 import { requestAdvice } from "~/features/settings/utils/action-helpers";
+import { useActionData } from "react-router";
+import { useEffect } from "react";
 
 const monthLabels = {
   1: "January",
@@ -70,6 +72,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function DashboardSummaryPage({ loaderData }: Route.ComponentProps) {
   const { summary, monthlyExpenseTotal, advices } = loaderData;
+  const actionData = useActionData<typeof action>();
   const periodEnd = advices?.[0]?.periodEnd;
   const spendingMonthly = monthlyExpenseTotal.map((m) => ({
     month: monthLabels[m.month as keyof typeof monthLabels],
@@ -77,6 +80,16 @@ export default function DashboardSummaryPage({ loaderData }: Route.ComponentProp
   }));
 
   const today = DateTime.now();
+
+  useEffect(() => {
+    if (actionData && !actionData.ok && actionData.error) {
+      if (actionData.error === "ADVICE_REQUEST_IN_PROGRESS") {
+        alert("AI 조언 요청이 진행 중입니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        alert(actionData.error);
+      }
+    }
+  }, [actionData]);
 
   return (
     <TabsContent value="summary" className="space-y-6 mt-4">

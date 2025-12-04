@@ -502,7 +502,6 @@ export type Query = {
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
   findSummary: FindSummaryOutput;
   me: MeOutput;
-  test: Scalars["Boolean"]["output"];
 };
 
 export type QueryFindBudgetsArgs = {
@@ -601,7 +600,7 @@ export type UpdateExpenseOutput = {
 
 export type UpsertBudgetInput = {
   /** 카테고리 ID */
-  categoryId?: InputMaybe<Scalars["Int"]["input"]>;
+  categoryId: Scalars["Int"]["input"];
   /** 월 */
   month: Scalars["Int"]["input"];
   /** 예산 금액 */
@@ -2595,7 +2594,6 @@ export type Query = {
   findMonthlyExpenseTotal: FindMonthlyExpenseTotalOutput;
   findSummary: FindSummaryOutput;
   me: MeOutput;
-  test: Scalars["Boolean"]["output"];
 };
 
 export type QueryFindBudgetsArgs = {
@@ -2694,7 +2692,7 @@ export type UpdateExpenseOutput = {
 
 export type UpsertBudgetInput = {
   /** 카테고리 ID */
-  categoryId?: InputMaybe<Scalars["Int"]["input"]>;
+  categoryId: Scalars["Int"]["input"];
   /** 월 */
   month: Scalars["Int"]["input"];
   /** 예산 금액 */
